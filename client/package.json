@@ -1,6 +1,6 @@
 {
-  "name": "my-world",
-  "version": "0.0.0",
+  "name": "connecting-people",
+  "version": "1.0.0",
   "license": "MIT",
   "scripts": {
     "ng": "ng",
