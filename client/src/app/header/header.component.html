@@ -1,0 +1,29 @@
+<header>
+  <nav class="navbar bg-primary">
+    <a class="navbar-brand" routerLink="/">My World</a>
+
+    <!-- logged out users -->
+    <ul *appShowAuth="false" class="nav navbar-nav navbar-right">
+      <li class="nav-item ">
+        <a class="nav-link" routerLink="/login" routerLinkActive="active">Sign in</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" routerLink="/register" routerLinkActive="active">Sign up</a>
+      </li>
+    </ul>
+    <!-- logged in users -->
+    <ul *appShowAuth="true" class="nav navbar-nav navbar-right">
+      <li class="nav-item ">
+        <a class="nav-link" routerLink="/" routerLinkActive="active">Home</a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" routerLink="/profile" routerLinkActive="active">
+          <img [src]="currentUser.image" *ngIf="currentUser.image" class="img-responsive userImg" /> {{currentUser.username}}
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" routerLink="/chat" routerLinkActive="active">Chat</a>
+      </li>
+    </ul>
+  </nav>
+</header>

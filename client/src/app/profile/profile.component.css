@@ -1,0 +1,29 @@
+.hero {
+    background: cornflowerblue;
+    padding: 30px 0 30px 15px;
+}
+.hero-content {
+    text-align: center;
+}
+.btn-logout {
+    padding: 6px 12px;
+    font-size: 13px;
+}
+.auth{
+    margin-left: 25%;
+    margin-bottom: 50px;
+}
+.title{
+    text-align: center;
+    padding-bottom: 20px;
+}
+.error-message{
+    color: #B85C5C;
+    font-weight: bold;
+}
+.userImg{
+    width: 100px;
+    height: 100px;
+    border-radius: 100px;
+    margin-bottom: 1rem;
+}

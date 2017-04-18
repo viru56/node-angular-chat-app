@@ -1,0 +1,25 @@
+header .navbar {
+    border-radius: 0;
+    margin: 0;
+    box-shadow: 0 1px 2px 0 grey;
+    overflow: hidden;
+    top: 0;
+    width: 100%;
+}
+.navbar-right {
+    margin-right: 0;
+}
+.nav-link, .navbar-brand, .navbar-brand:hover {
+    color: #fff;
+    cursor: pointer
+}
+.nav-link:hover {
+    background-color: #1E88E5;
+}
+.userImg{
+    height: 25px;
+    width: 25px;
+    border-radius: 50px;
+    float: left;
+    margin-right: 5px;
+}

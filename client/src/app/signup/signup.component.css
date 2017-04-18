@@ -1,0 +1,11 @@
+.auth{
+    margin-left: 25%;
+}
+.title{
+    text-align: center;
+    padding-bottom: 20px;
+}
+.error-message{
+    color: #B85C5C;
+    font-weight: bold;
+}
