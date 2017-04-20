@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewContainerRef } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastsManager } from 'ng2-toastr';
 
 import { UserService, ApiService } from '../services';
 import { User } from '../models';
@@ -15,19 +16,23 @@ export class ProfileComponent implements OnInit {
   private profileForm: FormGroup;
   private errorList: Array<string>;
   constructor(
+    private toastr: ToastsManager,
+    private vRef: ViewContainerRef,
     private router: Router,
     private userService: UserService,
     private apiService: ApiService,
     private formBuilder: FormBuilder
   ) {
+    this.toastr.setRootViewContainerRef(vRef);
     this.initForm();
   }
   ngOnInit() {
-    (<any>Object).assign(this.user, this.userService.getCurrentUser());
-    if (Object.keys(this.user).length === 0) {
+    if (Object.keys(this.userService.getCurrentUser()).length === 0) {
       this.apiService.get('/user').subscribe(data => {
         this.updateUser(data.user);
       });
+    } else {
+      this.updateUser(this.userService.getCurrentUser());
     }
   }
   private initForm() {
@@ -44,6 +49,7 @@ export class ProfileComponent implements OnInit {
     this.profileForm.patchValue(this.user);
   }
   private submitForm() {
+    this.errorList = [];
     this.updateUser(this.profileForm.value);
     for (const u in this.user) {
       if (this.user.hasOwnProperty(u) && this.user[u] === '') {
@@ -52,7 +58,7 @@ export class ProfileComponent implements OnInit {
     }
     this.userService.updateUser(this.user).subscribe(updatedUser => {
       this.updateUser(updatedUser);
-      this.router.navigateByUrl('/profile');
+      this.toastr.success('Information updated!','', { showCloseButton: true});
     }, err => {
       const errors = err.errors;
       for (const field in errors) {

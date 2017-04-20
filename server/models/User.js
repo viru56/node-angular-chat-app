@@ -25,12 +25,14 @@ let UserSchema = new mongoose.Schema({
     image: String,
     hash: String,
     salt: String,
-    phone:{
+    phone: {
         type: String,
-        minlength: [10,'is too short'],
-        maxlength: [13,'is too long'],
-        match:[/^\+?([0-9]){10,15}$/,'is invalid']
-    }
+        minlength: [10, 'is too short'],
+        maxlength: [13, 'is too long'],
+        match: [/^\+?([0-9]){10,13}$/, 'is invalid']
+    },
+    latitude: Number,
+    longitude: Number
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: "is already taken." })
@@ -63,10 +65,13 @@ UserSchema.methods.generateJwt = function () {
 // use this method to return response
 UserSchema.methods.toAuthJSON = function () {
     return {
+        _id: this._id,
         username: this.username,
         email: this.email,
-        image: this.image || null,
-        phone: this.phone || null,
+        image: this.image || "",
+        phone: this.phone || "",
+        latitude: this.latitude || 0,
+        longitude: this.longitude || 0,
         token: this.generateJwt()
     };
 };

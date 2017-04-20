@@ -5,6 +5,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { ReplaySubject } from 'rxjs/ReplaySubject';
 import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
+import { Router } from '@angular/router';
 
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
@@ -20,6 +21,7 @@ export class UserService {
     constructor(
         private http: Http,
         private apiService: ApiService,
+        private router: Router,
         private jwtService: JwtService
     ) { }
 
@@ -27,7 +29,10 @@ export class UserService {
         if (this.jwtService.getToken()) {
             this.apiService.get('/user')
                 .subscribe(
-                data => this.setAuth(data.user),
+                data => {
+                    this.setAuth(data.user);
+                    this.router.navigateByUrl('/chat');
+                },
                 err => this.clearAuth()
                 );
         } else {

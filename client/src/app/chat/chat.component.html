@@ -1,3 +1,60 @@
-<p>
-  chat works!
-</p>
+<div class="map">
+  <sebm-google-map [latitude]="user.latitude" [longitude]="user.longitude" [zoom]="zoom">
+    <sebm-google-map-marker *ngFor="let m of markers"
+    [iconUrl]="m.googleIconUrl" 
+    [latitude]="m.latitude" 
+    [longitude]="m.longitude" >
+    </sebm-google-map-marker>
+  </sebm-google-map>
+</div>
+<div class="row chat-panel">
+  <div class="panel-group">
+    <div class="panel panel-primary">
+      <div class="panel-heading">Friends</div>
+      <div class="panel-body chat-panel-list">
+        <ul class="chat-main-ul">
+          <li>
+            <div class="panel panel-default">
+              <div class="panel-heading" (click)="mainLiClick(user._id)">
+                <img [src]='user.googleIconUrl' class="userImg pull-left" />
+                <div class="username pull-right"><b> {{user.username}}</b></div>
+              </div>
+              <div class="panel-body" [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
+                <p *ngIf="user.phone">Phone - <span> {{user.phone}}</span></p>
+                <p>Email - <span>{{user.email}}</span></p>
+                <!--<hr>
+                <p class="message">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
+                  standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it
+                  to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
+                  typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
+                  sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
+                  including versions of Lorem Ipsum. </p>-->
+              </div>
+            </div>
+          </li>
+          <li *ngFor="let user of users">
+            <div class="panel panel-default">
+              <div class="panel-heading" (click)="mainLiClick(user._id)">
+                <img [src]='user.googleIconUrl' class="userImg pull-left" />
+                <div class="username pull-right"><b> {{user.username}}</b></div>
+              </div>
+              <div [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
+                <div class="panel-body ">
+                  <p *ngIf="user.phone">Phone - <span> {{user.phone}}</span></p>
+                  <p>Email - <span>{{user.email}}</span></p>
+                  <hr>
+                  <p class="message" *ngFor="let msg of userMessage">{{msg}}</p>
+                </div>
+                <div class="panel-footer">
+                  <form (ngSubmit)="sendMessage()">
+                    <input placeholder="Write your message" name="userInput" [(ngModel)]="userInput" class="form-control" type="text" />
+                  </form>
+                </div>
+              </div>
+            </div>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
