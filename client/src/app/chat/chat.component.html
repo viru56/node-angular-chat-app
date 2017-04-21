@@ -1,7 +1,7 @@
 <div class="map">
   <sebm-google-map [latitude]="user.latitude" [longitude]="user.longitude" [zoom]="zoom">
     <sebm-google-map-marker *ngFor="let m of markers"
-    [iconUrl]="m.googleIconUrl" 
+    [iconUrl]="m.iconUrl" 
     [latitude]="m.latitude" 
     [longitude]="m.longitude" >
     </sebm-google-map-marker>
@@ -16,7 +16,7 @@
           <li>
             <div class="panel panel-default">
               <div class="panel-heading" (click)="mainLiClick(user._id)">
-                <img [src]='user.googleIconUrl' class="userImg pull-left" />
+                <img [src]='user.iconUrl' class="userImg pull-left" />
                 <div class="username pull-right"><b> {{user.username}}</b></div>
               </div>
               <div class="panel-body" [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
@@ -35,7 +35,7 @@
           <li *ngFor="let user of users">
             <div class="panel panel-default">
               <div class="panel-heading" (click)="mainLiClick(user._id)">
-                <img [src]='user.googleIconUrl' class="userImg pull-left" />
+                <img [src]='user.iconUrl' class="userImg pull-left" />
                 <div class="username pull-right"><b> {{user.username}}</b></div>
               </div>
               <div [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">

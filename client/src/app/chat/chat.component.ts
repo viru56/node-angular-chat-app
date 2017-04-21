@@ -16,7 +16,7 @@ export class ChatComponent implements OnInit {
   private user: User = new User();
   private markers: Array<User> = [];
   private users: Array<User> = [];
-  private googleIconUrl: string;
+  private iconUrl: string;
   private zoom: number = 15;
 
   constructor(
@@ -27,7 +27,7 @@ export class ChatComponent implements OnInit {
 
   ngOnInit() {
     (<any>Object).assign(this.user, this.userService.getCurrentUser());
-    this.googleIconUrl = this.user.googleIconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
+    this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
     this.initUserLocationOnMap();
     this.getAllUsers();
   }
@@ -64,7 +64,7 @@ export class ChatComponent implements OnInit {
   cloneArray(source) {
     let target = [];
     for (let obj of source) {
-      obj['googleIconUrl'] = `${environment.google_image_path}${obj.username}.jpg`
+      obj['iconUrl'] = `${environment.google_image_path}${obj.username}.jpg`
       target.push((<any>Object).assign({}, obj));
     }
     return target;

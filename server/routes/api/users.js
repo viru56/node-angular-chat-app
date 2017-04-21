@@ -119,8 +119,8 @@ router.post('/user/login', (req, res, next) => {
     })(req, res, next);
 });
 
-var saveImage = function (imgUrl, fileName) {
-    var filePath = `../client/src/assets/googleMap/${fileName}.jpg`;
+var saveImage = function (imgUrl, username) {
+    var filePath = `.\\public\\images\\${username}.jpg`;
     Jimp.read(imgUrl, function (err, image) {
         if (err) {
             console.log(err);
@@ -130,7 +130,7 @@ var saveImage = function (imgUrl, fileName) {
                 .autocrop()
                 .write(filePath);
         }
-    });
+    }).catch(err=>console.log(err));
 };
 
 module.exports = router;

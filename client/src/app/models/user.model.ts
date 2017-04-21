@@ -4,7 +4,7 @@ export class User {
     username: string;
     token: string;
     image: string;
-    googleIconUrl: string;
+    iconUrl: string;
     phone: number;
     latitude: number;
     longitude: number;
