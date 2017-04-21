@@ -11,7 +11,8 @@ header .navbar {
 }
 .nav-link, .navbar-brand, .navbar-brand:hover {
     color: #fff;
-    cursor: pointer
+    cursor: pointer;
+    padding: 15px 5px;
 }
 .nav-link:hover {
     background-color: #1E88E5;
@@ -22,4 +23,9 @@ header .navbar {
     border-radius: 50px;
     float: left;
     margin-right: 5px;
+}
+
+.logo{
+    height: 42px;
+    margin: 4px;
 }

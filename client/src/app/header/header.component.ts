@@ -9,7 +9,8 @@ import { User } from '../models';
   styleUrls: ['./header.component.css']
 })
 export class HeaderComponent implements OnInit {
-  currentUser: User;
+  currentUser: User = new User();
+  private logo: string = "/src/assets/images/logo.png"
   constructor(
     private userService: UserService
   ) { }
