@@ -1,0 +1,118 @@
+.modal {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1050;
+    overflow: hidden;
+    -webkit-overflow-scrolling: touch;
+    outline: 0;
+}
+
+.fade {
+    opacity: 0;
+    -webkit-transition: opacity .15s linear;
+    -o-transition: opacity .15s linear;
+    transition: opacity .15s linear;
+}
+
+.fade.in {
+    opacity: 1;
+}
+
+.modal-dialog {
+    position: relative;
+    width: auto;
+    margin: 10px;
+}
+.modal.in .modal-dialog {
+    -webkit-transform: translate(0,0);
+    -ms-transform: translate(0,0);
+    -o-transform: translate(0,0);
+    transform: translate(0,0);
+}
+
+.modal.fade .modal-dialog {
+    -webkit-transition: -webkit-transform .3s ease-out;
+    -o-transition: -o-transform .3s ease-out;
+    transition: transform .3s ease-out;
+    -webkit-transform: translate(0,-25%);
+    -ms-transform: translate(0,-25%);
+    -o-transform: translate(0,-25%);
+    transform: translate(0,-25%);
+}
+.modal-body{
+    overflow: hidden;
+    overflow-y: visible;
+}
+@media (min-width: 768px) {
+    .modal-dialog {
+        width: 600px;
+        margin: 30px auto;
+    }
+     .modal-body {
+        max-height: 300px;
+        min-height: 200px;
+    }
+}
+@media (max-width: 768px) {
+    .modal-body {
+        height: 200px;
+    }
+}
+.modal-header{
+    color: #fff;
+    background-color: #337ab7;
+    height: 40px;
+}
+.modal-title {
+    margin-top: -7px;
+    text-align: center;
+}
+.modal-header .close {
+    margin-top: -7px;
+}
+.panel-group {
+    width: 150px;
+}
+.form-control{
+    border-radius: 0;
+    height: 50px;
+}
+.modal-footer {
+     padding:0px; 
+    max-height: 60px;
+}
+.modal-footer .btn {
+    height: 50px;
+    float: right;
+    margin-right: -1px;
+    border-radius: 0;
+}
+.modal-body .sender{
+   text-align: left;
+}
+.modal-body .sender span{
+   background-color: #f2f2f2;
+   padding: 5px;
+   border-radius: 10px;
+   box-shadow: 0 0 3px #B2B2B2;
+}
+.modal-body .receiver{
+    text-align: right;
+}
+.modal-body .receiver span{
+   background-color: #ADD8E6;
+   padding: 5px;
+   border-radius: 10px;
+   box-shadow: 0 0 3px #B2B2B2;
+}
+.modal-header .userImg {
+    border-radius: 20px;
+    margin-top: -10px;
+}
+::-webkit-scrollbar
+{
+  width: 0;  /* for vertical scrollbars */
+}

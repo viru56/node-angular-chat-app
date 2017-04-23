@@ -3,11 +3,20 @@
   "compilerOptions": {
     "outDir": "../out-tsc/app",
     "module": "es2015",
-    "baseUrl": "",
+    "target": "es5",
+    "removeComments": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "baseUrl": "./src",
+    "noImplicitThis": true,
+    "strictNullChecks": false,
+    "sourceMap": true,
     "types": []
   },
   "exclude": [
     "test.ts",
+    "node_modules",
     "**/*.spec.ts"
   ]
 }

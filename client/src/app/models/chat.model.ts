@@ -1,0 +1,14 @@
+class Message {
+    _id?: any;
+    sender: string;
+    receiver: string;
+    content: string;
+    updatedAt?: Date;
+    createdAt?: Date;
+}
+
+export class Chat {
+    _id: any;
+    connection: string;
+    messages: Array<Message>;
+}

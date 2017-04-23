@@ -1,9 +1,6 @@
 <div class="map">
   <sebm-google-map [latitude]="user.latitude" [longitude]="user.longitude" [zoom]="zoom">
-    <sebm-google-map-marker *ngFor="let m of markers"
-    [iconUrl]="m.iconUrl" 
-    [latitude]="m.latitude" 
-    [longitude]="m.longitude" >
+    <sebm-google-map-marker *ngFor="let m of markers" [iconUrl]="m.iconUrl" [latitude]="m.latitude" [longitude]="m.longitude">
     </sebm-google-map-marker>
   </sebm-google-map>
 </div>
@@ -22,32 +19,37 @@
               <div class="panel-body" [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
                 <p *ngIf="user.phone">Phone - <span> {{user.phone}}</span></p>
                 <p>Email - <span>{{user.email}}</span></p>
-                <!--<hr>
-                <p class="message">Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's
-                  standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it
-                  to make a type specimen book. It has survived not only five centuries, but also the leap into electronic
-                  typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset
-                  sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker
-                  including versions of Lorem Ipsum. </p>-->
               </div>
             </div>
           </li>
-          <li *ngFor="let user of users">
+          <li *ngFor="let fr of friends" >
             <div class="panel panel-default">
-              <div class="panel-heading" (click)="mainLiClick(user._id)">
-                <img [src]='user.iconUrl' class="userImg pull-left" />
-                <div class="username pull-right"><b> {{user.username}}</b></div>
+              <div class="panel-heading" (click)="mainLiClick(fr._id)" (dblclick)="initiateChatDialog(fr)">
+                <img [src]='fr.iconUrl' class="userImg pull-left" />
+                <div class="username pull-right"><b> {{fr.username}}</b></div>
               </div>
-              <div [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
+              <div [ngClass]="{'display-block': fr._id === showPanel, 'display-none': fr._id !== showPanel}">
                 <div class="panel-body ">
-                  <p *ngIf="user.phone">Phone - <span> {{user.phone}}</span></p>
-                  <p>Email - <span>{{user.email}}</span></p>
+                  <p *ngIf="fr.phone">Phone - <span> {{fr.phone}}</span></p>
+                  <p>Email - <span>{{fr.email}}</span></p>
                   <hr>
-                  <p class="message" *ngFor="let msg of userMessage">{{msg}}</p>
+                  <div *ngIf="message" class="chat-area" #scroll>
+                    <div *ngFor="let msg of message.messages" >
+                      <p class="message sender" *ngIf="fr._id === msg.sender">
+                      <span >  {{msg.content }} </span>
+                      </p>
+                      <p class="message receiver" *ngIf="fr._id === msg.receiver">
+                        <span >  {{msg.content }} </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div *ngIf="!message">
+                    <p class="message">start a new conversation</p>
+                  </div>
                 </div>
                 <div class="panel-footer">
-                  <form (ngSubmit)="sendMessage()">
-                    <input placeholder="Write your message" name="userInput" [(ngModel)]="userInput" class="form-control" type="text" />
+                  <form (ngSubmit)="sendMessage($event,fr._id)">
+                    <input placeholder="Write your message and hit enter" name="content" [(ngModel)]="content" class="form-control" type="text" />
                   </form>
                 </div>
               </div>
