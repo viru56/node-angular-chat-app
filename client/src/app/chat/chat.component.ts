@@ -1,7 +1,7 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { User, Chat } from '../models';
-import { UserService, ApiService, ChatService } from '../services';
+import { UserService, ApiService, ChatService, SocketSerivce } from '../services';
 import { environment } from '../../environments/environment';
 import { ChatDialog } from './chat-dialog/chat-dialog.component';
 @Component({
@@ -19,11 +19,15 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private friends: Array<User> = [];
   private iconUrl: string;
   private zoom: number = 15;
+  private socket: any;
+  private writer: any;
+  private writerName: string;
 
   constructor(
     private userService: UserService,
     private apiService: ApiService,
     private chatService: ChatService,
+    private socketSerivce: SocketSerivce,
     private dialogService: DialogService
   ) {
   }
@@ -33,13 +37,26 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
     this.initUserLocationOnMap();
     this.getAllUsers();
+    this.socket = this.socketSerivce.getMessages().subscribe(message => {
+      this.message.messages.push(message);
+    });
+    this.writer = this.socketSerivce.getWriter().subscribe(data => {
+      this.writerName = data.username;
+      setTimeout(() => {
+        this.writerName = null;
+      }, 5000);
+    });
   }
   ngAfterViewChecked() {
     this.scrollChatDiv();
   }
+  ngOnDestroy() {
+    this.socket.unsubscribe();
+    this.writer.unsubscribe();
+  }
   private initiateChatDialog(sender) {
     this.showPanel = null;
-    this.dialogService.addDialog(ChatDialog, { sender: sender,userId: this.user._id }, { closeByClickingOutside: true });
+    this.dialogService.addDialog(ChatDialog, { sender: sender, userId: this.user._id }, { closeByClickingOutside: true });
   }
   private initUserLocationOnMap() {
     const self = this;
@@ -81,8 +98,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     let query = {
       connection: this.message.connection,
       content: this.content,
+      receiver: this.user._id,
       sender
     }
+    this.socketSerivce.sendMessage(query);
     this.chatService.update(query).subscribe(data => {
       this.content = "";
     }, err => console.log(err));
@@ -103,6 +122,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       if (userId !== this.user._id) {
         this.chatService.get(userId).subscribe(data => {
           this.message = data;
+          if (this.message) {
+            this.socketSerivce.joinRoom({ connection: data.connection, username: this.user.username });
+          }
           this.showPanel = userId;
         }, err => console.log(err));
       } else {
@@ -110,9 +132,23 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       }
     }
   }
-  private onScroll(ev) {
-    console.log(ev);
+  private onKeyUp(ev) {
+    if (this.message) {
+      const writer = {
+        connection: this.message.connection,
+        username: this.user.username
+      }
+      this.socketSerivce.setWriter(writer);
+    }
+    if (ev.keyCode === 13 && this.message) {
+      const writer = {
+        connection: this.message.connection,
+        username: null
+      }
+      this.socketSerivce.setWriter(writer);
+    }
   }
+
   // deep clone of an array
   private cloneArray(source) {
     let target = [];

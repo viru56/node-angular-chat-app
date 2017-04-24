@@ -12,8 +12,16 @@ import { SignupModule } from './signup';
 import { ProfileModule } from './profile';
 import { ChatModule } from './chat';
 import { ErrorModule } from './error';
-import { ApiService, UserService, JwtService, AuthGuard, NoAuthGuard, ChatService } from './services';
-import { ShowAuthDirective} from './directives';
+import { ShowAuthDirective } from './directives';
+import {
+  ApiService,
+  UserService,
+  JwtService,
+  AuthGuard,
+  NoAuthGuard,
+  ChatService,
+  SocketSerivce
+} from './services';
 
 import { ToastModule } from 'ng2-toastr';
 
@@ -44,7 +52,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([], { useHash: fal
     JwtService,
     AuthGuard,
     NoAuthGuard,
-    ChatService
+    ChatService,
+    SocketSerivce
   ],
   bootstrap: [AppComponent]
 })
