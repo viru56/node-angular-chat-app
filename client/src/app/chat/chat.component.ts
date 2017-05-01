@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { User, Chat } from '../models';
+import { User, Chat, Room } from '../models';
 import { UserService, ApiService, ChatService, SocketSerivce } from '../services';
 import { environment } from '../../environments/environment';
 import { ChatDialog } from './chat-dialog/chat-dialog.component';
@@ -13,15 +13,19 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scroll') private chatDiv: ElementRef;
   private showPanel: string = null;
   private content: string = "";
-  private message: Chat;
+  private messages: Array<Chat> = [];
+  private room: Room = new Room();
+  private rooms: Array<Room> = [];
   private user: User = new User();
   private markers: Array<User> = [];
   private friends: Array<User> = [];
   private iconUrl: string;
   private zoom: number = 15;
-  private socket: any;
-  private writer: any;
   private writerName: string;
+  private socketSubscribe: any;
+  private writerSubscribe: any;
+  private roomSubscribe: any;
+  private findAllUsersRoomsSubscribe: any;
 
   constructor(
     private userService: UserService,
@@ -34,25 +38,46 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     (<any>Object).assign(this.user, this.userService.getCurrentUser());
+    this.socketSerivce.initSocket(this.user._id);
     this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
     this.initUserLocationOnMap();
-    this.getAllUsers();
-    this.socket = this.socketSerivce.getMessages().subscribe(message => {
-      this.message.messages.push(message);
+    // this.getAllUsers();
+    this.socketSerivce.getAllUsersRooms(this.user._id);
+    this.socketSubscribe = this.socketSerivce.getMessages().subscribe(data => {
+      this.messages.push(data.message);
+      this.rooms = data.rooms;
+      this.updateNotification();
     });
-    this.writer = this.socketSerivce.getWriter().subscribe(data => {
+
+    this.writerSubscribe = this.socketSerivce.getWriter().subscribe(data => {
       this.writerName = data.username;
       setTimeout(() => {
         this.writerName = null;
-      }, 5000);
+      }, 10000);
+    });
+
+    this.roomSubscribe = this.socketSerivce.getRoom().subscribe(data => {
+      this.room = data.room;
+      this.messages = data.messages;
+      this.socketSerivce.updateRoom({connection: this.room.connection,sender: this.showPanel});      
+    });
+
+    this.findAllUsersRoomsSubscribe = this.socketSerivce.setAllUsersRooms().subscribe((data) => {
+      this.friends = this.cloneArray(data.users);
+      this.markers = this.cloneArray(data.users);
+      this.markers.push(this.user);
+      this.rooms = data.rooms;
+      this.updateNotification();
     });
   }
   ngAfterViewChecked() {
     this.scrollChatDiv();
   }
   ngOnDestroy() {
-    this.socket.unsubscribe();
-    this.writer.unsubscribe();
+    this.socketSubscribe.unsubscribe();
+    this.writerSubscribe.unsubscribe();
+    this.roomSubscribe.unsubscribe();
+    this.findAllUsersRoomsSubscribe.unsubscribe();
   }
   private initiateChatDialog(sender) {
     this.showPanel = null;
@@ -74,75 +99,54 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     }, err => console.log(err));
   }
 
-  private sendMessage(ev, sender) {
-    ev.preventDefault();
-
-    if (this.message) {
-      if (this.content.length > 0)
-        this.updateMessageInRoom(sender);
-    } else {
-      if (this.content.length > 0)
-        this.createNewRoom(sender);
-    }
-  }
   private updateUserLocation() {
     this.userService.updateUser(this.user);
   }
 
-  private updateMessageInRoom(sender) {
-    this.message.messages.push({
-      receiver: this.user._id,
-      content: this.content,
-      sender
-    });
-    let query = {
-      connection: this.message.connection,
-      content: this.content,
-      receiver: this.user._id,
-      sender
+  private sendMessage(ev, receiver) {
+    ev.preventDefault();
+    if (this.content.length > 0) {
+      const query = {
+        connection: this.room.connection,
+        sender: this.user._id,
+        receiver: receiver,
+        content: this.content
+      }
+      this.socketSerivce.sendMessage(query);
+      this.messages.push(query);
+      this.content = '';
     }
-    this.socketSerivce.sendMessage(query);
-    this.chatService.update(query).subscribe(data => {
-      this.content = "";
-    }, err => console.log(err));
-  }
-
-  private createNewRoom(sender) {
-    let query = { sender, content: this.content };
-    this.chatService.create(query).subscribe(data => {
-      this.message = data;
-      this.content = "";
-    }, err => console.log(err));
   }
   //show hide panel
-  private mainLiClick(userId) {
-    if (this.showPanel === userId) {
+  private mainLiClick(friend) {
+    if (this.showPanel === friend._id) {
       this.showPanel = null
     } else {
-      if (userId !== this.user._id) {
-        this.chatService.get(userId).subscribe(data => {
-          this.message = data;
-          if (this.message) {
-            this.socketSerivce.joinRoom({ connection: data.connection, username: this.user.username });
-          }
-          this.showPanel = userId;
-        }, err => console.log(err));
+      friend.unreadMessage = 0;
+      const secondUser = this.room.connection && this.room.connection.split('-')[1];
+      if (friend._id !== this.user._id && secondUser !== friend._id) {
+        this.socketSerivce.joinRoom({
+          sender: this.user._id,
+          receiver: friend._id,
+          username: this.user.username
+        });
+        this.showPanel = friend._id;
       } else {
-        this.showPanel = userId;
+        this.showPanel = friend._id;
       }
     }
   }
   private onKeyUp(ev) {
-    if (this.message) {
+    if (this.messages.length > 0) {
       const writer = {
-        connection: this.message.connection,
+        connection: this.messages[0].connection,
         username: this.user.username
       }
       this.socketSerivce.setWriter(writer);
     }
-    if (ev.keyCode === 13 && this.message) {
+    if (ev.keyCode === 13 && this.messages.length > 0) {
       const writer = {
-        connection: this.message.connection,
+        connection: this.messages[0].connection,
         username: null
       }
       this.socketSerivce.setWriter(writer);
@@ -162,5 +166,16 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     try {
       this.chatDiv.nativeElement.scrollTop = this.chatDiv.nativeElement.scrollHeight;
     } catch (err) { }
+  }
+  private updateNotification() {
+    for (let room of this.rooms) {
+      for (let receiver of room.receivers) {
+        for (let friend of this.friends) {
+          if (receiver._id === friend._id && this.showPanel !== friend._id) {
+            friend.unreadMessage = receiver.unreadMessage;
+          }
+        }
+      }
+    }
   }
 }

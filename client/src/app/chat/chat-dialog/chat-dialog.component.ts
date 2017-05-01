@@ -19,7 +19,7 @@ export class ChatDialog extends DialogComponent<ChatDialog, null> {
     content: string;
     sender: User;
     userId: string;
-    private message: Chat;
+    private message: Array<Chat> = [];
     constructor(
         dialogService: DialogService,
         private chatService: ChatService,
@@ -36,42 +36,24 @@ export class ChatDialog extends DialogComponent<ChatDialog, null> {
     private getConversation() {
         this.chatService.get(this.sender._id).subscribe(data => {
             console.log(data);
-            this.message = data;
+            this.message.push(data);
         }, err => console.log(err));
     }
 
     private sendMessage(ev) {
         ev.preventDefault();
 
-        if (this.message) {
-            if (this.content.length > 0)
-                this.updateMessageInRoom();
-        } else {
+        if (this.message.length > 0) {
             if (this.content.length > 0)
                 this.createNewRoom();
         }
     }
 
-    private updateMessageInRoom() {
-        this.message.messages.push({
-            receiver: this.userId,
-            content: this.content,
-            sender: this.sender._id
-        });
-        let query = {
-            connection: this.message.connection,
-            content: this.content,
-            sender: this.sender._id
-        }
-        this.chatService.update(query).subscribe(data => {
-            this.content = "";
-        }, err => console.log(err));
-    }
 
     private createNewRoom() {
         let query = { sender: this.sender._id, content: this.content };
         this.chatService.create(query).subscribe(data => {
-            this.message = data;
+            this.message.push(data);
             this.content = "";
         }, err => console.log(err));
     }

@@ -31,11 +31,22 @@ let UserSchema = new mongoose.Schema({
         maxlength: [13, 'is too long'],
         match: [/^\+?([0-9]){10,13}$/, 'is invalid']
     },
+    logedIn: {
+        isLogedIn: {
+            type: Boolean,
+            default: false
+        },
+        lastLogedIn: {
+            type: Date,
+            default: new Date()
+        }
+    },
+    socketId: String,
     latitude: Number,
     longitude: Number
 }, { timestamps: true });
 
-UserSchema.plugin(uniqueValidator, { message: "is already taken." })
+UserSchema.plugin(uniqueValidator, { message: "is already taken." });
 
 // use this method to encript the user password
 UserSchema.methods.setPassword = function (password) {
@@ -72,6 +83,7 @@ UserSchema.methods.toAuthJSON = function () {
         phone: this.phone || "",
         latitude: this.latitude || 0,
         longitude: this.longitude || 0,
+        logedIn: this.logedIn,
         token: this.generateJwt()
     };
 };

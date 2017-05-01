@@ -24,9 +24,12 @@
           </li>
           <li *ngFor="let fr of friends">
             <div class="panel panel-default">
-              <div class="panel-heading" (click)="mainLiClick(fr._id)" (dblclick)="initiateChatDialog(fr)">
+              <div class="panel-heading" (click)="mainLiClick(fr)" (dblclick)="initiateChatDialog(fr)">
                 <img [src]='fr.iconUrl' class="userImg pull-left" />
+                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn === true">online</span>
+                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn === false">offline</span>                
                 <span class="writer" *ngIf="writerName === fr.username"> is typing...</span>
+                <span class="unread" *ngIf="fr.unreadMessage > 0">{{fr.unreadMessage}} </span>
                 <div class="username pull-right"><b> {{fr.username}}</b></div>
               </div>
               <div [ngClass]="{'display-block': fr._id === showPanel, 'display-none': fr._id !== showPanel}">
@@ -34,8 +37,8 @@
                   <p *ngIf="fr.phone">Phone - <span> {{fr.phone}}</span></p>
                   <p>Email - <span>{{fr.email}}</span></p>
                   <hr>
-                  <div *ngIf="message" class="chat-area" #scroll>
-                    <div *ngFor="let msg of message.messages">
+                  <div *ngIf="messages.length > 0" class="chat-area" #scroll>
+                    <div *ngFor="let msg of messages">
                       <p class="message sender" *ngIf="fr._id === msg.sender">
                         <span>  {{msg.content }} </span>
                       </p>
@@ -44,7 +47,7 @@
                       </p>
                     </div>
                   </div>
-                  <div *ngIf="!message">
+                  <div *ngIf="messages.length === 0">
                     <p class="message">start a new conversation</p>
                   </div>
                 </div>

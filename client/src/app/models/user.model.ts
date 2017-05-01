@@ -8,4 +8,6 @@ export class User {
     phone: number;
     latitude: number;
     longitude: number;
+    logedIn?: any;
+    unreadMessage?: any;
 }

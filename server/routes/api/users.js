@@ -19,8 +19,8 @@ router.get('/user', auth.required, (req, res, next) => {
     }).catch(next)
 });
 router.get('/users', auth.required, (req, res, next) => {
-    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1 };
-    User.find({_id: {$ne : req.payload.id}}, projection).exec((err, users) => {
+    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1, 'logedIn': 1 };
+    User.find({ _id: { $ne: req.payload.id } }, projection).exec((err, users) => {
         if (err) {
             return res.sendStatus(401);
         }
@@ -130,7 +130,7 @@ var saveImage = function (imgUrl, username) {
                 .autocrop()
                 .write(filePath);
         }
-    }).catch(err=>console.log(err));
+    }).catch(err => console.log(err));
 };
 
 module.exports = router;

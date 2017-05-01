@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
 
-const MessageSchema = new mongoose.Schema({
+const ChatSchema = new mongoose.Schema({
 
+    connection: {
+        type: String, // sender + receiver
+        index: true,
+        required: [true, "can't be blank"]
+    },
     sender: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "can't be blank"]
@@ -14,29 +18,11 @@ const MessageSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, "can't be blank"]
-    }
-}, { timestamps: true });
-
-let ChatSchema = new mongoose.Schema({
-
-    connection: {
-        type: String, // sender + receiver
-        index: true,
-        unique: true,
-        required: [true, "can't be blank"]
     },
-    messages: {
-        type: [MessageSchema]
+    unread: {
+        type: String,
+        default: false
     }
-}, { timestamps: true });
-
-ChatSchema.plugin(uniqueValidator, { message: "is already taken." });
-
-ChatSchema.methods.toAuthJSON = function () {
-    return {
-        connection: this.connection,
-        messages: this.messages,
-    };
-};
+}, { timestamps: true, versionKey: false });
 
 mongoose.model('Chat', ChatSchema);
