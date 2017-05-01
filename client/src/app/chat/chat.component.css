@@ -1,0 +1,122 @@
+/* css for map */
+.map {
+    position: absolute;
+    top: 50px;
+    left: 0;
+    right: 0;
+    overflow: hidden; 
+    z-index: 0;
+}
+.sebm-google-map-container {
+  height: 670px;
+  position: relative;
+}
+.sebm-google-map-container .gmnoprint img {
+    width: 25px !important;
+    height: 25px !important;
+}
+/* css for map */
+.chat-panel{
+   margin: 4px 0 30px 4px;
+    width: 340px;
+    float: left;
+    position: relative;
+}
+.panel-heading {
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+}
+.panel-footer  {
+    padding: 0;
+    border-bottom-right-radius: 0;
+    border-bottom-left-radius: 0;
+}
+.panel-footer .form-control{
+    border-radius: 0;
+}
+.panel-group .panel{
+    border-radius: 0;
+}
+.panel-body {
+    padding: 4px;
+}
+.panel-body .sender{
+   text-align: left;
+}
+.panel-body .sender span{
+   background-color: #f2f2f2;
+   padding: 5px;
+   border-radius: 10px;
+   box-shadow: 0 0 3px #B2B2B2;
+}
+.panel-body .receiver{
+    text-align: right;
+}
+.panel-body .chat-area{
+    max-height: 150px;
+    overflow: hidden;
+    width: 100%;
+    overflow-y: visible;
+}
+.panel-body .receiver span{
+   background-color: #ADD8E6;
+   padding: 5px;
+   border-radius: 10px;
+   box-shadow: 0 0 3px #B2B2B2;
+}
+.chat-main-ul{
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    font: initial;
+}
+.chat-main-ul li .panel-heading {
+    padding-left: 5px;
+    height: 39px;
+}
+.chat-main-ul li {
+    margin-bottom: 4px;
+}
+.chat-main-ul li:hover {
+    border: 1px solid #337ab7;
+}
+.display-block {
+    display: block;
+}
+.display-none {
+    display: none;
+}
+.userImg {
+    border-radius: 20px;
+    margin-top: -6px;
+}
+
+.chat-panel-list{
+    overflow: hidden;
+    max-height: 539px;
+    overflow-y: visible;
+    background: #ddd;
+}
+
+.panel-default p {
+    margin: 0 0 5px;
+}
+.panel-default .message{
+    font-size: 14px;
+    width: 100%;
+    padding: 5px;
+}
+.panel-default hr {
+    margin: 0;
+    padding-bottom: 2px
+}
+
+.writer{
+    padding-left: 5px;
+}
+
+
+::-webkit-scrollbar
+{
+  width: 0;  /* for vertical scrollbars */
+}

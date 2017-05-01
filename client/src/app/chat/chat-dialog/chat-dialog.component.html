@@ -1,0 +1,35 @@
+<div class="modal-dialog dont-fade">
+    <div class="modal-content">
+        <div class="modal-header">
+            <button type="button" class="close" (click)="close()">&times;</button>
+            <img [src]='sender.iconUrl' class="userImg pull-left" />
+            <h4 class="modal-title">{{sender.username}}</h4>
+        </div>
+        <div class="modal-body"  #scroll>
+            <div *ngIf="message" >
+                <div *ngFor="let msg of message.messages">
+                   <p class="message sender" *ngIf="userId === msg.receiver">
+                      <span >  {{msg.content }} </span>
+                      </p>
+                      <p class="message receiver" *ngIf="userId === msg.sender">
+                        <span >  {{msg.content }} </span>
+                      </p>
+                </div>
+            </div>
+            <div *ngIf="!message">
+                <p class="message">Oh! It seems you dodn't have any conversation yet.</p>
+                <p class="message">why don't' you start? just say hello.</p>
+            </div>
+        </div>
+        <div class="modal-footer">
+            <form (ngSubmit)="sendMessage($event)" class="row">
+                <div class="col-md-11">
+                    <input autofocus name="content" [(ngModel)]="content" class="form-control" type="text" />
+                </div>
+                <div class="col-md-1 pull-right">
+                    <button type="submit" class="btn btn-primary">send</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

@@ -1,6 +1,6 @@
 var fs = require('fs'),
-  http = require('http'),
   path = require('path'),
+  http = require('http'),
   methods = require('methods'),
   express = require('express'),
   bodyParser = require('body-parser'),
@@ -19,13 +19,12 @@ var app = express();
 app.use(cors());
 
 // Normal express config defaults
-app.use(require('morgan')('dev'));
+// app.use(require('morgan')('dev'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 app.use(require('method-override')());
 app.use(express.static(__dirname + '/public'));
-
 app.use(session({ secret: SECRET, cookie: { maxAge: 60000 }, resave: false, saveUninitialized: false }));
 
 // if (!isProduction) {
@@ -38,13 +37,14 @@ if (isProduction) {
 } else {
   mongoose.Promise = global.Promise;
   mongoose.connect(MONGODB_URI);
-  mongoose.set('debug', true);
+  // mongoose.set('debug', true);
   mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
   mongoose.connection.once('open', () => {
     console.log('connected to mongodb');
   });
 }
 require('./models/User');
+require('./models/Chat');
 require('./config/passport')
 app.use(require('./routes'));
 
@@ -90,3 +90,5 @@ app.use(function (err, req, res, next) {
 var server = app.listen(process.env.PORT || 3000, function () {
   console.log('Listening on port ' + server.address().port);
 });
+
+require('./services/socket.service')(app, server)

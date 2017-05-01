@@ -1,8 +1,12 @@
 var mongoose = require('mongoose');
 var router = require('express').Router();
 var passport = require('passport');
+var request = require('request');
+
 var User = mongoose.model('User');
 var auth = require('../auth');
+var fs = require('fs');
+var Jimp = require("jimp");
 
 router.get('/user', auth.required, (req, res, next) => {
     User.findById(req.payload.id).then(user => {
@@ -12,6 +16,15 @@ router.get('/user', auth.required, (req, res, next) => {
         return res.json({
             user: user.toAuthJSON()
         });
+    }).catch(next)
+});
+router.get('/users', auth.required, (req, res, next) => {
+    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1 };
+    User.find({_id: {$ne : req.payload.id}}, projection).exec((err, users) => {
+        if (err) {
+            return res.sendStatus(401);
+        }
+        return res.json({ users });
     }).catch(next)
 });
 
@@ -34,6 +47,10 @@ router.post('/user', (req, res, next) => {
     user.email = req.body.user.email;
     user.setPassword(req.body.user.password.toString());
     user.save().then(() => {
+        //save user image in small size for showing on map 
+        if (user.image) {
+            saveImage(user.image, user.username);
+        }
         return res.json({ user: user.toAuthJSON() });
     }).catch(next);
 });
@@ -55,12 +72,21 @@ router.put('/user', auth.required, (req, res, next) => {
         if (typeof req.body.user.image !== "undefined") {
             user.image = req.body.user.image;
         }
-        if (typeof req.body.user.phone !== "undefined") {
+        if (typeof req.body.user.phone !== "undefined" && req.body.user.phone !== "") {
             user.phone = req.body.user.phone;
         }
-
-        return user.save().then(()=> {
-            return res.json({user: user.toAuthJSON()});
+        if (typeof req.body.user.latitude !== "undefined") {
+            user.latitude = req.body.user.latitude;
+        }
+        if (typeof req.body.user.longitude !== "undefined") {
+            user.longitude = req.body.user.longitude;
+        }
+        return user.save().then(() => {
+            //save user image in small size for showing on map 
+            if (user.image) {
+                saveImage(user.image, user.username);
+            }
+            return res.json({ user: user.toAuthJSON() });
         });
     }).catch(next);
 });
@@ -92,5 +118,19 @@ router.post('/user/login', (req, res, next) => {
         }
     })(req, res, next);
 });
+
+var saveImage = function (imgUrl, username) {
+    var filePath = `.\\public\\images\\${username}.jpg`;
+    Jimp.read(imgUrl, function (err, image) {
+        if (err) {
+            console.log(err);
+        } else {
+            image.resize(30, 30)
+                .quality(100)
+                .autocrop()
+                .write(filePath);
+        }
+    }).catch(err=>console.log(err));
+};
 
 module.exports = router;

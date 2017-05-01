@@ -1,7 +1,11 @@
 export class User {
+    _id: any;
     email: string;
     username: string;
     token: string;
     image: string;
-    phone: string;
+    iconUrl: string;
+    phone: number;
+    latitude: number;
+    longitude: number;
 }

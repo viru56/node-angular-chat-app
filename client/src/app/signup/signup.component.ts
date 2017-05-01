@@ -45,7 +45,7 @@ export class SignupComponent implements OnInit {
     this.userService.attemptAuth(this.authType, user)
       .subscribe(data => {
         console.log(data);
-        this.router.navigateByUrl('/');
+        this.router.navigateByUrl('/chat');
       }, err => {
         const errors = err.errors;
         for (const field in errors) {
