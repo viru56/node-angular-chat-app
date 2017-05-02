@@ -84,6 +84,7 @@ UserSchema.methods.toAuthJSON = function () {
         latitude: this.latitude || 0,
         longitude: this.longitude || 0,
         logedIn: this.logedIn,
+        socketId: this.socketId || null,
         token: this.generateJwt()
     };
 };

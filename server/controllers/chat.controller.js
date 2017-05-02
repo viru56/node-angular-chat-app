@@ -5,12 +5,11 @@ module.exports = {
     createChat
 }
 
-function findChats(data, cb) {
-    console.log(data);
+function findChats(userId, cb) {
     const query = {
         $or: [
-            { connection: data.sender + data.receiver },
-            { connection: data.receiver + data.sender }
+            { sender: userId },
+            { receiver: userId }
         ]
     }
     Chat.find(query)

@@ -2,11 +2,11 @@ var mongoose = require('mongoose');
 
 const ChatSchema = new mongoose.Schema({
 
-    connection: {
-        type: String, // sender + receiver
-        index: true,
-        required: [true, "can't be blank"]
-    },
+    // connection: {
+    //     type: String, // sender + receiver
+    //     index: true,
+    //     required: [true, "can't be blank"]
+    // },
     sender: {
         type: mongoose.Schema.Types.ObjectId,
         required: [true, "can't be blank"]

@@ -24,10 +24,10 @@
           </li>
           <li *ngFor="let fr of friends">
             <div class="panel panel-default">
-              <div class="panel-heading" (click)="mainLiClick(fr)" (dblclick)="initiateChatDialog(fr)">
+              <div class="panel-heading" (click)="mainLiClick(fr._id)" (dblclick)="initiateChatDialog(fr)">
                 <img [src]='fr.iconUrl' class="userImg pull-left" />
-                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn === true">online</span>
-                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn === false">offline</span>                
+                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn == true">online</span>
+                <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn == false">offline </span>
                 <span class="writer" *ngIf="writerName === fr.username"> is typing...</span>
                 <span class="unread" *ngIf="fr.unreadMessage > 0">{{fr.unreadMessage}} </span>
                 <div class="username pull-right"><b> {{fr.username}}</b></div>
@@ -52,10 +52,8 @@
                   </div>
                 </div>
                 <div class="panel-footer">
-                  <form (ngSubmit)="sendMessage($event,fr._id)">
-                    <input placeholder="Write your message and hit enter" name="content" [(ngModel)]="content" class="form-control" type="text"
-                      (keyup)="onKeyUp($event)" />
-                  </form>
+                  <input placeholder="Write your message and hit enter" name="content" [(ngModel)]="content" class="form-control" type="text"
+                    (keyup)="onKeyUp($event,fr)" />
                 </div>
               </div>
             </div>
