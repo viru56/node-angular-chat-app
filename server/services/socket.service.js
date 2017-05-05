@@ -6,69 +6,65 @@ module.exports = (app, server) => {
     var io = require('socket.io').listen(server);
 
     io.on('connection', (socket) => {
-
-        socket.on('update-user', (userId) => {
-
-            //console.log('user connected', socket.id,userId);
+        socket.on('join', (userId) => {
+            // console.log('user joined', socket.id);
+            socket.userId = userId;
             var query = {
-                id: userId,
+                _id: userId,
                 socketId: socket.id,
                 logedIn: {
                     isLogedIn: true,
                     lastLogedIn: new Date()
                 }
             }
-            User.updateUser(query);
+            User.updateUser(query, (err, user) => {
+                if (user) {
+                    socket.broadcast.emit('user-join-left', user);
+                } else {
+                    socket.broadcast.to(socket.id).emit('user-join-left', err); //not implimented yet clinet side future ref
+                }
+            });
         });
-        socket.on('get-users-rooms', (userId) => {
-            Room.findAllRooms(userId, (err, rooms) => {
-                User.findAllUsers(userId, (err, users) => {
-                    socket.emit('set-users-rooms', {
-                        rooms,
-                        users
-                    });
-                });
+
+        socket.on('get-users', (userId) => {
+            User.findAllUsers(userId, (err, users) => {
+                socket.emit('set-users', users);
             });
         });
         socket.on('get', (data) => {
-            Room.updateRoom(data);
-            Chat.createChat(data, (err, doc) => {
-                Room.findAllRooms(data.receiver, (err, rooms) => {
-                    socket.broadcast.to(data.connection).emit('set', {
-                        message: doc,
-                        rooms
-                    });
-                });
+            Chat.createChat(data, (err, roomMsg) => {
+                socket.broadcast.to(data.socketId).emit('set', roomMsg);
             });
         });
-
         socket.on('get-writer', (data) => {
-            socket.broadcast.to(data.connection).emit('set-writer', data);
+            socket.broadcast.to(data.socketId).emit('set-writer', data.writerName);
         });
-
-        socket.on('join', (data) => {
-            Room.findOrCreateRoom(data, (err, data) => {
-                if (data.room) {
-                    socket.room = data.room.connection;
-                    socket.user = data.room.createdBy;
-                    socket.join(data.room.connection);
-                    socket.emit('room-joined', data);
-                }
+        socket.on('get-chat-history', (userId) => {
+            Chat.findChats(userId, (err, docs) => {
+                socket.emit('set-chat-history', docs);
             });
         });
-        socket.on('update-room', (data) => {
-            Room.updateRoom(data);
+        socket.on('room-update', (connection) => {
+            Room.updateUnreadMessageToZero(connection);
         });
         socket.on('disconnect', () => {
-            //  console.log('user disconnect', socket.id);
-            var query = {
-                socketId: socket.id,
-                logedIn: {
-                    isLogedIn: false,
-                    lastLogedIn: new Date()
+            //  console.log('user disconnect', socket.id, socket.userId);
+            if (socket.userId) {
+                var query = {
+                    _id: socket.userId,
+                    logedIn: {
+                        isLogedIn: false,
+                        lastLogedIn: new Date()
+                    }
                 }
+                User.updateUser(query, (err, user) => {
+                    if (user) {
+                        socket.broadcast.emit('user-join-left', user);
+                    } else {
+                        socket.broadcast.to(socket.id).emit('err-user-join-left', err); //not implimented yet clinet side future ref
+                    }
+                });
             }
-            User.updateUser(query);
         });
     });
 

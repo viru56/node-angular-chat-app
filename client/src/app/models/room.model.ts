@@ -1,8 +1,9 @@
 export class Room {
-    _id?: any;
+    _id?: string;
     connection: string;
-    createdBy?: any;
-    receivers: Array<any>;
+    sender: string;
+    receiver: string;
     updatedAt?: Date;
     createdAt?: Date;
+    unreadMessage?: number;
 }

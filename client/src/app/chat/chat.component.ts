@@ -14,19 +14,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private showPanel: string = null;
   private content: string = "";
   private messages: Array<Chat> = [];
-  private room: Room = new Room();
-  private rooms: Array<Room> = [];
   private user: User = new User();
+  private room: Room = new Room();
   private markers: Array<User> = [];
   private friends: Array<User> = [];
   private iconUrl: string;
   private zoom: number = 15;
   private writerName: string;
-  private socketSubscribe: any;
+  private getMessageSubscribe: any;
   private writerSubscribe: any;
-  private roomSubscribe: any;
-  private findAllUsersRoomsSubscribe: any;
-
+  private findAllUsersSubscribe: any;
+  private userJoinLeftSubscribe: any;
+  private setChatHistorySubscribe: any;
   constructor(
     private userService: UserService,
     private apiService: ApiService,
@@ -42,42 +41,51 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
     this.initUserLocationOnMap();
     // this.getAllUsers();
-    this.socketSerivce.getAllUsersRooms(this.user._id);
-    this.socketSubscribe = this.socketSerivce.getMessages().subscribe(data => {
-      this.messages.push(data.message);
-      this.rooms = data.rooms;
+    this.socketSerivce.getAllUsers(this.user._id);
+
+    this.getMessageSubscribe = this.socketSerivce.getMessage().subscribe(data => {
+      this.room = data.room;
+      this.messages.push(data.doc);
+      this.writerName = null;
       this.updateNotification();
     });
-
-    this.writerSubscribe = this.socketSerivce.getWriter().subscribe(data => {
-      this.writerName = data.username;
+    this.setChatHistorySubscribe = this.socketSerivce.setChatHistory().subscribe((messages) => {
+      this.messages = messages;
+    });
+    this.writerSubscribe = this.socketSerivce.getWriter().subscribe(writerName => {
+      this.writerName = writerName;
       setTimeout(() => {
         this.writerName = null;
-      }, 10000);
+      }, 3000);
     });
 
-    this.roomSubscribe = this.socketSerivce.getRoom().subscribe(data => {
-      this.room = data.room;
-      this.messages = data.messages;
-      this.socketSerivce.updateRoom({connection: this.room.connection,sender: this.showPanel});      
-    });
 
-    this.findAllUsersRoomsSubscribe = this.socketSerivce.setAllUsersRooms().subscribe((data) => {
-      this.friends = this.cloneArray(data.users);
-      this.markers = this.cloneArray(data.users);
+    this.findAllUsersSubscribe = this.socketSerivce.setAllUsers().subscribe((users) => {
+      this.friends = this.cloneArray(users);
+      this.markers = this.cloneArray(users);
       this.markers.push(this.user);
-      this.rooms = data.rooms;
-      this.updateNotification();
+    });
+    this.userJoinLeftSubscribe = this.socketSerivce.userJoinLeft().subscribe((user) => {
+      const length = this.friends.length;
+      for (let i = 0; i < length; i++) {
+        if (this.friends[i]._id == user._id) {
+          user['iconUrl'] = `${environment.google_image_path}${user.username}.jpg`
+          user.unreadMessage = this.friends[i].unreadMessage;
+          this.friends[i] = user;
+          break;
+        }
+      }
     });
   }
   ngAfterViewChecked() {
     this.scrollChatDiv();
   }
   ngOnDestroy() {
-    this.socketSubscribe.unsubscribe();
+    this.getMessageSubscribe.unsubscribe();
+    this.findAllUsersSubscribe.unsubscribe();
     this.writerSubscribe.unsubscribe();
-    this.roomSubscribe.unsubscribe();
-    this.findAllUsersRoomsSubscribe.unsubscribe();
+    this.userJoinLeftSubscribe.unsubscribe();
+    this.setChatHistorySubscribe.unsubscribe();
   }
   private initiateChatDialog(sender) {
     this.showPanel = null;
@@ -103,53 +111,41 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.userService.updateUser(this.user);
   }
 
-  private sendMessage(ev, receiver) {
-    ev.preventDefault();
-    if (this.content.length > 0) {
+  //show hide panel
+  private mainLiClick(receiver) {
+    if (this.showPanel === receiver._id) {
+      this.showPanel = null
+    } else {
+      if (receiver._id != this.user._id) {
+        this.socketSerivce.getChatHistory(this.user._id);
+        this.showPanel = receiver._id;
+        if (receiver.unreadMessage !== 0) {
+          this.socketSerivce.updateUnreadMessageToZero(receiver.connection);
+          receiver.unreadMessage = 0;
+        }
+      }
+      this.showPanel = receiver._id;
+    }
+  }
+  private onKeyUp(ev, frnd) {
+    const keyCode = ev.which || ev.keyCode;
+    if (keyCode !== 13 && this.content.trim().length > 0) {
+      const writer = {
+        socketId: frnd.socketId,
+        writerName: this.user.username
+      }
+      this.socketSerivce.setWriter(writer);
+    }
+    if (keyCode === 13 && this.content.trim().length > 0) {
       const query = {
-        connection: this.room.connection,
         sender: this.user._id,
-        receiver: receiver,
-        content: this.content
+        receiver: frnd._id,
+        socketId: frnd.socketId,
+        content: this.content.trim()
       }
       this.socketSerivce.sendMessage(query);
       this.messages.push(query);
       this.content = '';
-    }
-  }
-  //show hide panel
-  private mainLiClick(friend) {
-    if (this.showPanel === friend._id) {
-      this.showPanel = null
-    } else {
-      friend.unreadMessage = 0;
-      const secondUser = this.room.connection && this.room.connection.split('-')[1];
-      if (friend._id !== this.user._id && secondUser !== friend._id) {
-        this.socketSerivce.joinRoom({
-          sender: this.user._id,
-          receiver: friend._id,
-          username: this.user.username
-        });
-        this.showPanel = friend._id;
-      } else {
-        this.showPanel = friend._id;
-      }
-    }
-  }
-  private onKeyUp(ev) {
-    if (this.messages.length > 0) {
-      const writer = {
-        connection: this.messages[0].connection,
-        username: this.user.username
-      }
-      this.socketSerivce.setWriter(writer);
-    }
-    if (ev.keyCode === 13 && this.messages.length > 0) {
-      const writer = {
-        connection: this.messages[0].connection,
-        username: null
-      }
-      this.socketSerivce.setWriter(writer);
     }
   }
 
@@ -168,14 +164,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
   private updateNotification() {
-    for (let room of this.rooms) {
-      for (let receiver of room.receivers) {
-        for (let friend of this.friends) {
-          if (receiver._id === friend._id && this.showPanel !== friend._id) {
-            friend.unreadMessage = receiver.unreadMessage;
-          }
+    if (this.showPanel !== this.room.sender) {
+      for (let fr of this.friends) {
+        if (this.room.sender == fr._id) {
+          fr.unreadMessage = this.room.unreadMessage;
+          fr.connection = this.room.connection;
+          break;
         }
       }
+    } else {
+      // update room unreadMessage to 0
+      this.socketSerivce.updateUnreadMessageToZero(this.room.connection);
     }
   }
 }

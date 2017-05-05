@@ -4,28 +4,19 @@ var Chat = mongoose.model('Chat');
 var User = mongoose.model('User');
 
 module.exports = {
-    findOrCreateRoom,
+    CreateOrUpdateRoom,
     createRoom,
     findAllRooms,
-    updateRoom
+    updateUnreadMessageToZero
 }
 
-function findOrCreateRoom(data, cb) {
-    const query = {
-        $or: [
-            { connection: data.sender + '-' + data.receiver },
-            { connection: data.receiver + '-' + data.sender }
-        ]
-    }
+function CreateOrUpdateRoom(data, cb) {
+    const query = { connection: data.sender + '-' + data.receiver }
     Room.findOne(query).then((room) => {
         if (room) {
-            Chat.find({ connection: room.connection }).then((docs) => {
-                cb(null, {
-                    room: room.toJSON(),
-                    messages: docs
-                });
-
-            }).catch((err) => cb(err, null));
+            room.unreadMessage += 1;
+            room.save();
+            cb(null, room.toJSON());
         } else {
             createRoom(data, cb);
         }
@@ -35,36 +26,24 @@ function findOrCreateRoom(data, cb) {
 function createRoom(data, cb) {
     const query = {
         connection: data.sender + '-' + data.receiver,
-        createdBy: data.sender,
-        receivers: [{ _id: data.sender }, { _id: data.receiver }]
+        sender: data.sender,
+        receiver: data.receiver
     }
     Room.create(query)
-        .then((room) => {
-            cb(null, {
-                room: room.toJSON(),
-                messages: []
-            });
-        })
+        .then((room) => cb(null, room.toJSON()))
         .catch((err) => cb(err, null));
 };
 
-function findAllRooms(senderId, cb) {
-    Room.find({ receivers: { $elemMatch: { _id: senderId } } })
-        .then((rooms) => cb(null, rooms))
+function findAllRooms(userId, cb) {
+    Room.find({ receiver: userId }, { '_id': 0, 'connection': 1, 'sender': 1, 'unreadMessage': 1 })
+        .then((rooms) => {
+            cb(null, rooms)
+        })
         .catch((err) => cb(err, null))
 }
-function updateRoom(data) {
-    Room.findOne({ connection: data.connection }).then((room) => {
-        for (var i = 0; i < room.receivers.length; i++) {
-            if (data.sender == room.receivers[i]._id) {
-                if (data.receiver) {
-                    room.receivers[i].unreadMessage += 1;
-                } else{
-                    room.receivers[i].unreadMessage = 0;
-                }
-                break;
-            }
-        }
+function updateUnreadMessageToZero(connection) {
+    Room.findOne({ connection: connection }).then((room) => {
+        room.unreadMessage = 0;
         room.save();
-    });
+    }).catch((err)=>console.log(err));
 }
