@@ -1,6 +1,6 @@
 var mongoose = require('mongoose');
 
-const ChatSchema = new mongoose.Schema({
+var ChatSchema = new mongoose.Schema({
 
     // connection: {
     //     type: String, // sender + receiver
@@ -18,10 +18,6 @@ const ChatSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, "can't be blank"]
-    },
-    unread: {
-        type: String,
-        default: false
     }
 }, { timestamps: true, versionKey: false });
 

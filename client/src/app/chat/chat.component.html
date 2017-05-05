@@ -12,7 +12,7 @@
         <ul class="chat-main-ul">
           <li>
             <div class="panel panel-default">
-              <div class="panel-heading" (click)="mainLiClick(user._id)">
+              <div class="panel-heading" (click)="mainLiClick(user)">
                 <img [src]='user.iconUrl' class="userImg pull-left" />
                 <div class="username pull-right"><b> {{user.username}}</b></div>
               </div>
@@ -24,7 +24,7 @@
           </li>
           <li *ngFor="let fr of friends">
             <div class="panel panel-default">
-              <div class="panel-heading" (click)="mainLiClick(fr._id)" (dblclick)="initiateChatDialog(fr)">
+              <div class="panel-heading" (click)="mainLiClick(fr)" (dblclick)="initiateChatDialog(fr)">
                 <img [src]='fr.iconUrl' class="userImg pull-left" />
                 <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn == true">online</span>
                 <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn == false">offline </span>

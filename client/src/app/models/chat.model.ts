@@ -1,5 +1,5 @@
 export class Chat {
-    _id?: any;
+    _id?: string;
     connection?: string;
     sender: string;
     receiver: string;

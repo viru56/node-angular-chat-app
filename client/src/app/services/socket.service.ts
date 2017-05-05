@@ -34,9 +34,9 @@ export class SocketSerivce {
         this.socket.emit('get-writer', data);
     }
      getWriter() {
-        let observable = new Observable<any>(observer => {
-            this.socket.on('set-writer', (data) => {
-                observer.next(data);
+        let observable = new Observable<string>(observer => {
+            this.socket.on('set-writer', (writerName) => {
+                observer.next(writerName);
             });
             return () => {
                 this.socket.disconnect();
@@ -48,8 +48,11 @@ export class SocketSerivce {
     sendMessage(data) {
         this.socket.emit('get', data);
     }
+    updateUnreadMessageToZero(connetion){
+        this.socket.emit('room-update',connetion);
+    }
     getMessage() {
-        let observable = new Observable<Chat>(observer => {
+        let observable = new Observable<any>(observer => {
             this.socket.on('set', (data) => {
                 observer.next(data);
             });

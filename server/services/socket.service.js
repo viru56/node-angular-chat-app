@@ -7,7 +7,7 @@ module.exports = (app, server) => {
 
     io.on('connection', (socket) => {
         socket.on('join', (userId) => {
-           // console.log('user joined', socket.id);
+            // console.log('user joined', socket.id);
             socket.userId = userId;
             var query = {
                 _id: userId,
@@ -32,17 +32,20 @@ module.exports = (app, server) => {
             });
         });
         socket.on('get', (data) => {
-            Chat.createChat(data, (err, doc) => {
-                socket.broadcast.to(data.socketId).emit('set', doc);
+            Chat.createChat(data, (err, roomMsg) => {
+                socket.broadcast.to(data.socketId).emit('set', roomMsg);
             });
         });
         socket.on('get-writer', (data) => {
-            socket.broadcast.to(data.socketId).emit('set-writer', data);
+            socket.broadcast.to(data.socketId).emit('set-writer', data.writerName);
         });
         socket.on('get-chat-history', (userId) => {
             Chat.findChats(userId, (err, docs) => {
                 socket.emit('set-chat-history', docs);
             });
+        });
+        socket.on('room-update', (connection) => {
+            Room.updateUnreadMessageToZero(connection);
         });
         socket.on('disconnect', () => {
             //  console.log('user disconnect', socket.id, socket.userId);

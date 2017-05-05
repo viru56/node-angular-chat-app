@@ -1,6 +1,6 @@
 import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
-import { User, Chat } from '../models';
+import { User, Chat, Room } from '../models';
 import { UserService, ApiService, ChatService, SocketSerivce } from '../services';
 import { environment } from '../../environments/environment';
 import { ChatDialog } from './chat-dialog/chat-dialog.component';
@@ -15,6 +15,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private content: string = "";
   private messages: Array<Chat> = [];
   private user: User = new User();
+  private room: Room = new Room();
   private markers: Array<User> = [];
   private friends: Array<User> = [];
   private iconUrl: string;
@@ -42,15 +43,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     // this.getAllUsers();
     this.socketSerivce.getAllUsers(this.user._id);
 
-    this.getMessageSubscribe = this.socketSerivce.getMessage().subscribe(message => {
-      this.messages.push(message);
+    this.getMessageSubscribe = this.socketSerivce.getMessage().subscribe(data => {
+      this.room = data.room;
+      this.messages.push(data.doc);
       this.writerName = null;
+      this.updateNotification();
     });
     this.setChatHistorySubscribe = this.socketSerivce.setChatHistory().subscribe((messages) => {
       this.messages = messages;
     });
-    this.writerSubscribe = this.socketSerivce.getWriter().subscribe(data => {
-      this.writerName = data.username;
+    this.writerSubscribe = this.socketSerivce.getWriter().subscribe(writerName => {
+      this.writerName = writerName;
       setTimeout(() => {
         this.writerName = null;
       }, 3000);
@@ -67,6 +70,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       for (let i = 0; i < length; i++) {
         if (this.friends[i]._id == user._id) {
           user['iconUrl'] = `${environment.google_image_path}${user.username}.jpg`
+          user.unreadMessage = this.friends[i].unreadMessage;
           this.friends[i] = user;
           break;
         }
@@ -109,14 +113,18 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   //show hide panel
   private mainLiClick(receiver) {
-    if (this.showPanel === receiver) {
+    if (this.showPanel === receiver._id) {
       this.showPanel = null
     } else {
-      if (receiver != this.user._id) {
+      if (receiver._id != this.user._id) {
         this.socketSerivce.getChatHistory(this.user._id);
-        this.showPanel = receiver;
+        this.showPanel = receiver._id;
+        if (receiver.unreadMessage !== 0) {
+          this.socketSerivce.updateUnreadMessageToZero(receiver.connection);
+          receiver.unreadMessage = 0;
+        }
       }
-      this.showPanel = receiver;
+      this.showPanel = receiver._id;
     }
   }
   private onKeyUp(ev, frnd) {
@@ -124,7 +132,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     if (keyCode !== 13 && this.content.trim().length > 0) {
       const writer = {
         socketId: frnd.socketId,
-        username: this.user.username
+        writerName: this.user.username
       }
       this.socketSerivce.setWriter(writer);
     }
@@ -133,8 +141,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
         sender: this.user._id,
         receiver: frnd._id,
         socketId: frnd.socketId,
-        content: this.content.trim(),
-        unread: true
+        content: this.content.trim()
       }
       this.socketSerivce.sendMessage(query);
       this.messages.push(query);
@@ -157,5 +164,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     } catch (err) { }
   }
   private updateNotification() {
+    if (this.showPanel !== this.room.sender) {
+      for (let fr of this.friends) {
+        if (this.room.sender == fr._id) {
+          fr.unreadMessage = this.room.unreadMessage;
+          fr.connection = this.room.connection;
+          break;
+        }
+      }
+    } else {
+      // update room unreadMessage to 0
+      this.socketSerivce.updateUnreadMessageToZero(this.room.connection);
+    }
   }
 }

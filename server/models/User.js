@@ -43,7 +43,9 @@ let UserSchema = new mongoose.Schema({
     },
     socketId: String,
     latitude: Number,
-    longitude: Number
+    longitude: Number,
+    unreadMessage:Number,
+    connection:String
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: "is already taken." });

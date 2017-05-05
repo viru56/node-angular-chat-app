@@ -1,16 +1,28 @@
 var mongoose = require('mongoose');
-const User = mongoose.model('User');
-
+var User = mongoose.model('User');
+var Room = require('./room.controller');
 module.exports = {
     findAllUsers,
     updateUser,
     getSocketId
 }
 
-function findAllUsers(senderId, cb) {
-    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1, 'logedIn': 1,'socketId':1};
-    User.find({ _id: { $ne: senderId } }, projection)
-        .then((users) => cb(null, users))
+function findAllUsers(userId, cb) {
+    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1, 'logedIn': 1, 'socketId': 1 };
+    User.find({ _id: { $ne: userId } }, projection)
+        .then((users) => {
+            Room.findAllRooms(userId, (err, rooms) => {
+                for (let room of rooms) {
+                    for (let user of users) {
+                        if (room.sender.equals(user._id)) {
+                            user.connection = room.connection;
+                            user.unreadMessage = room.unreadMessage;                          
+                        }
+                    }
+                }
+                cb(null, users);
+            });
+        })
         .catch((error) => cb(error, null));
 }
 

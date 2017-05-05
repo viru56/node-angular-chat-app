@@ -11,4 +11,5 @@ export class User {
     logedIn?: any;
     socketId?: string;
     unreadMessage?: any;
+    connection?: any;
 }
