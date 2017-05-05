@@ -113,8 +113,15 @@
 
 .writer{
     padding-left: 5px;
+    font-size: 13px;
 }
-
+.unread{
+    margin-left: 50px;
+    background: #337ab7;
+    padding: 4px 8px 4px 8px ;
+    border-radius: 50%;
+    color: #fff;
+}
 
 ::-webkit-scrollbar
 {

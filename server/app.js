@@ -37,7 +37,7 @@ if (isProduction) {
 } else {
   mongoose.Promise = global.Promise;
   mongoose.connect(MONGODB_URI);
-  // mongoose.set('debug', true);
+ // mongoose.set('debug', true);
   mongoose.connection.on('error', console.error.bind(console, 'connection error:'));
   mongoose.connection.once('open', () => {
     console.log('connected to mongodb');
@@ -45,6 +45,7 @@ if (isProduction) {
 }
 require('./models/User');
 require('./models/Chat');
+require('./models/Room');
 require('./config/passport')
 app.use(require('./routes'));
 

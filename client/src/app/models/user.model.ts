@@ -1,5 +1,5 @@
 export class User {
-    _id: any;
+    _id: string;
     email: string;
     username: string;
     token: string;
@@ -8,4 +8,8 @@ export class User {
     phone: number;
     latitude: number;
     longitude: number;
+    logedIn?: any;
+    socketId?: string;
+    unreadMessage?: any;
+    connection?: any;
 }

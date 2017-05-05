@@ -1,10 +1,9 @@
-export class Chat {
+export class Room {
     _id?: string;
-    connection?: string;
+    connection: string;
     sender: string;
     receiver: string;
-    content: string;
     updatedAt?: Date;
     createdAt?: Date;
-    unread?: boolean;
+    unreadMessage?: number;
 }

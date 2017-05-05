@@ -23,10 +23,10 @@
         </div>
         <div class="modal-footer">
             <form (ngSubmit)="sendMessage($event)" class="row">
-                <div class="col-md-11">
+                <div class="col-md-11 col-xs-11">
                     <input autofocus name="content" [(ngModel)]="content" class="form-control" type="text" />
                 </div>
-                <div class="col-md-1 pull-right">
+                <div class="col-md-1 col-xs-1 pull-right">
                     <button type="submit" class="btn btn-primary">send</button>
                 </div>
             </form>
