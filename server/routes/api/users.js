@@ -29,7 +29,6 @@ router.get('/users', auth.required, (req, res, next) => {
 });
 
 router.post('/user', (req, res, next) => {
-
     if (!req.body.user) {
         return res.status(422).json({
             errors: {
@@ -56,6 +55,7 @@ router.post('/user', (req, res, next) => {
 });
 
 router.put('/user', auth.required, (req, res, next) => {
+    console.log(req.payload.id);
     User.findById(req.payload.id).then(user => {
         if (!user) {
             return res.sendStatus(401);
@@ -118,6 +118,25 @@ router.post('/user/login', (req, res, next) => {
         }
     })(req, res, next);
 });
+// GET /auth/google
+
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+// GET /auth/google/callback
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function (req, res) {
+        saveImage(req.user.image, req.user.username);
+        return res.json(req.user.toAuthJSON());
+    }
+);
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/login' }),
+    function (req, res) {
+        saveImage(req.user.image, req.user.username);
+        return res.json(req.user.toAuthJSON());
+    }
+);
 
 var saveImage = function (imgUrl, username) {
     var filePath = `.\\public\\images\\${username}.jpg`;

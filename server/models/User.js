@@ -45,7 +45,15 @@ let UserSchema = new mongoose.Schema({
     latitude: Number,
     longitude: Number,
     unreadMessage:Number,
-    connection:String
+    connection:String,
+    socialId: String,
+    gender: String,
+    provider: {
+        type: String,
+        default: 'native'
+    },
+    profileUrl: String,
+    name: String
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: "is already taken." });
@@ -86,6 +94,8 @@ UserSchema.methods.toAuthJSON = function () {
         latitude: this.latitude || 0,
         longitude: this.longitude || 0,
         logedIn: this.logedIn,
+        provider: this.provider,
+        profileUrl: this.profileUrl,
         socketId: this.socketId || null,
         token: this.generateJwt()
     };

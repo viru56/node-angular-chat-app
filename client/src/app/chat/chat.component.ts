@@ -13,6 +13,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scroll') private chatDiv: ElementRef;
   private showPanel: string = null;
   private content: string = "";
+  private showList: boolean = true;
   private messages: Array<Chat> = [];
   private user: User = new User();
   private room: Room = new Room();
@@ -37,12 +38,11 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   ngOnInit() {
     (<any>Object).assign(this.user, this.userService.getCurrentUser());
-    this.socketSerivce.initSocket(this.user._id);
+    this.socketSerivce.initSocket(this.user);
+    this.socketSerivce.getAllUsers(this.user._id);
     this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
     this.initUserLocationOnMap();
     // this.getAllUsers();
-    this.socketSerivce.getAllUsers(this.user._id);
-
     this.getMessageSubscribe = this.socketSerivce.getMessage().subscribe(data => {
       this.room = data.room;
       this.messages.push(data.doc);
@@ -93,11 +93,19 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
   private initUserLocationOnMap() {
     const self = this;
-    navigator.geolocation.getCurrentPosition(function (position) {
+    navigator.geolocation.getCurrentPosition((position) => {
       self.user.latitude = position.coords.latitude;
       self.user.longitude = position.coords.longitude;
       self.updateUserLocation();
-    });
+    }, (err) => {
+      this.apiService.getThirdPartyAPI(environment.ipInfo_url).subscribe((info: any) => {
+        const latLong = info.loc.split(",");
+        self.user.latitude = parseFloat(latLong[0]);
+        self.user.longitude = parseFloat(latLong[1]);
+        self.updateUserLocation();
+      });
+
+    }, { timeout: 10000 });
   }
   private getAllUsers() {
     this.apiService.get('/users').subscribe(users => {
@@ -108,7 +116,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   private updateUserLocation() {
-    this.userService.updateUser(this.user);
+    this.socketSerivce.initSocket(this.user);
+    this.socketSerivce.getAllUsers(this.user._id);
   }
 
   //show hide panel
@@ -176,5 +185,8 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       // update room unreadMessage to 0
       this.socketSerivce.updateUnreadMessageToZero(this.room.connection);
     }
+  }
+  private showUserList() {
+    this.showList = !this.showList;
   }
 }

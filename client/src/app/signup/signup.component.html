@@ -3,9 +3,9 @@
     <div class="col-md-6 offset-md-3 col-xs-12 auth">
       <h1 class="title">{{title}}</h1>
       <ul class="error-message" *ngIf="errorList">
-          <li *ngFor="let err of errorList"> 
-              {{err }}
-          </li>
+        <li *ngFor="let err of errorList">
+          {{err }}
+        </li>
       </ul>
       <form [formGroup]="authForm" (ngSubmit)="submitForm()">
         <div class="form-group" *ngIf="authType == 'register'">
@@ -17,8 +17,12 @@
         <div class="form-group">
           <input placeholder="Password" class="form-control" formControlName="password" type="password" />
         </div>
-        <button class="btn btn-lg btn-primary pull-right" type="submit">{{ title }}</button>
+        <button class="btn btn-primary pull-right" type="submit">{{ title }}</button>
       </form>
+      <div class="social-login">
+         <button (click)="loginWithGoogle()" class="btn btn-danger googleBtn"> <i class="fa fa-google"></i><sub>google</sub></button>
+         <button (click)="loginWithFacebook()" class="btn btn-primary facebookBtn"> <i class="fa fa-facebook"></i><sub>acebook</sub></button>
+      </div>
     </div>
   </div>
 </div>

@@ -1,6 +1,11 @@
 .auth{
     margin-left: 25%;
 }
+@media (max-width: 768px){
+    .auth{
+      margin: 0;
+    }  
+}
 .title{
     text-align: center;
     padding-bottom: 20px;
@@ -8,4 +13,7 @@
 .error-message{
     color: #B85C5C;
     font-weight: bold;
+}
+.social-login .googleBtn{
+   margin-right: 10px;
 }

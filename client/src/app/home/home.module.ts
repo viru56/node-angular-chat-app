@@ -11,6 +11,18 @@ const homeRouting: ModuleWithProviders = RouterModule.forChild([
         resolve: {
             isAuthenticated: HomeAuthResolver
         }
+    }, {
+        path: 'auth/google/callback',
+        component: HomeComponent,
+        resolve: {
+            isAuthenticated: HomeAuthResolver
+        }
+    }, {
+        path: 'auth/facebook/callback',
+        component: HomeComponent,
+        resolve: {
+            isAuthenticated: HomeAuthResolver
+        }
     }
 ]);
 

@@ -7,6 +7,7 @@ import 'rxjs/add/operator/catch';
 import 'rxjs/add/operator/map';
 import { Router } from '@angular/router';
 
+import { environment } from '../../environments/environment';
 import { ApiService } from './api.service';
 import { JwtService } from './jwt.service';
 import { User } from '../models';
@@ -69,6 +70,23 @@ export class UserService {
                 return data.user;
             });
     }
+    // login with google
+    googleLogin(): void {
+        window.location.href = `${environment.api_url}/auth/google`;
+    }
+     // login with facebook
+    facebookLogin(){
+        window.location.href = `${environment.api_url}/auth/facebook`;
+    }
+
+    // google or facebook callback
+    socialCalllback(path: string): void {
+        this.apiService.get(path).subscribe((user: User) => {
+            this.setAuth(user);
+            this.router.navigateByUrl('/chat');
+        });
+    }
+   
     getCurrentUser(): User {
         return this.currentUserSubject.value;
     }

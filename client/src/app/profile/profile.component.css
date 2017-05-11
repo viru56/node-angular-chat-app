@@ -13,6 +13,11 @@
     margin-left: 25%;
     margin-bottom: 50px;
 }
+@media(max-width:768px){
+    .auth{
+        margin-left: 0;
+    }
+}
 .title{
     text-align: center;
     padding-bottom: 20px;

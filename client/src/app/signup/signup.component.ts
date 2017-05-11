@@ -55,5 +55,11 @@ export class SignupComponent implements OnInit {
         }
       });
   }
+  loginWithGoogle() {
+    this.userService.googleLogin();
+  }
+  loginWithFacebook(){
+    this.userService.facebookLogin();
+  }
 
 }

@@ -5,10 +5,13 @@
   </sebm-google-map>
 </div>
 <div class="row chat-panel">
-  <div class="panel-group">
+  <div class="panel-group" [ngClass]="{'p-g-width':!showList }">
     <div class="panel panel-primary">
-      <div class="panel-heading">Friends</div>
-      <div class="panel-body chat-panel-list">
+      <div class="panel-heading">
+        Friends
+        <i (click)="showUserList()" class=" fa fa-lg pull-right panel-icon" [ngClass]="{' fa-minus-circle ': showList, 'fa-plus-circle': !showList}"></i>
+      </div>
+      <div class="panel-body chat-panel-list" *ngIf="showList">
         <ul class="chat-main-ul">
           <li>
             <div class="panel panel-default">

@@ -12,4 +12,6 @@ export class User {
     socketId?: string;
     unreadMessage?: any;
     connection?: any;
+    provider?: string;
+    profileUrl?: string;
 }

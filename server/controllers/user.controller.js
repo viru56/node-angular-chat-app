@@ -16,7 +16,7 @@ function findAllUsers(userId, cb) {
                     for (let user of users) {
                         if (room.sender.equals(user._id)) {
                             user.connection = room.connection;
-                            user.unreadMessage = room.unreadMessage;                          
+                            user.unreadMessage = room.unreadMessage;
                         }
                     }
                 }
@@ -26,7 +26,7 @@ function findAllUsers(userId, cb) {
         .catch((error) => cb(error, null));
 }
 
-function updateUser(query, cb) {
+function updateUser(query) {
     if (query._id) {
         User.findById(query._id).then((user) => {
             if (user) {
@@ -36,10 +36,13 @@ function updateUser(query, cb) {
                 if (typeof query.socketId !== "undefined") {
                     user.socketId = query.socketId;
                 }
-                if (typeof query.unreadMessage !== "undefined") {
-                    user.unreadMessage = query.unreadMessage;
+                if (typeof query.latitude !== "undefined") {
+                    user.latitude = query.latitude;
                 }
-                user.save().then(() => cb(null, user.toAuthJSON())).catch((err) => cb(err, null));
+                if (typeof query.longitude !== "undefined") {
+                    user.longitude = query.longitude;
+                }
+                user.save();
             } else {
                 console.log("user Not Found", query);
             }
