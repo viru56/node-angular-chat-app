@@ -82,6 +82,7 @@ export class UserService {
     // google or facebook callback
     socialCalllback(path: string): void {
         this.apiService.get(path).subscribe((user: User) => {
+            console.log(user);
             this.setAuth(user);
             this.router.navigateByUrl('/chat');
         });

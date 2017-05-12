@@ -1,12 +1,13 @@
-var mongoose = require('mongoose');
-var router = require('express').Router();
-var passport = require('passport');
-var request = require('request');
-
-var User = mongoose.model('User');
-var auth = require('../auth');
-var fs = require('fs');
-var Jimp = require("jimp");
+var mongoose = require('mongoose'),
+    router = require('express').Router(),
+    passport = require('passport'),
+    request = require('request'),
+    path = require('path'),
+    fs = require('fs'),
+    User = mongoose.model('User'),
+    auth = require('../auth'),
+    fs = require('fs'),
+    Jimp = require("jimp");
 
 router.get('/user', auth.required, (req, res, next) => {
     User.findById(req.payload.id).then(user => {
@@ -125,31 +126,35 @@ router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'p
 router.get('/auth/google/callback',
     passport.authenticate('google', { failureRedirect: '/login' }),
     function (req, res) {
-        saveImage(req.user.image, req.user.username);
-        return res.json(req.user.toAuthJSON());
+        saveImage(req.user.image, req.user.username, () => {
+            return res.json(req.user.toAuthJSON());
+        });
     }
 );
 router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
 router.get('/auth/facebook/callback',
     passport.authenticate('facebook', { failureRedirect: '/login' }),
     function (req, res) {
-        saveImage(req.user.image, req.user.username);
-        return res.json(req.user.toAuthJSON());
+        saveImage(req.user.image, req.user.username, () => {
+            return res.json(req.user.toAuthJSON());
+        });
     }
 );
 
-var saveImage = function (imgUrl, username) {
-    var filePath = `.\\public\\images\\${username}.jpg`;
-    Jimp.read(imgUrl, function (err, image) {
-        if (err) {
-            console.log(err);
-        } else {
+var saveImage = function (imgUrl, username, cb) {
+    //var filePath = `.\\public\\images\\${username}.jpg`;
+    var filePath = path.join(__dirname, '../../', 'public', 'images', `${username}.jpg`);
+    if (!fs.existsSync(filePath)) {
+        Jimp.read(imgUrl).then((image) => {
             image.resize(30, 30)
-                .quality(100)
+                .quality(60)
                 .autocrop()
                 .write(filePath);
-        }
-    }).catch(err => console.log(err));
+            if (cb) cb();
+        }).catch((err) => { if (cb) { cb(); } });
+    } else {
+        if (cb) { cb() };
+    }
 };
 
 module.exports = router;

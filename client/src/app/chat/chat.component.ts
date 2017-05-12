@@ -19,7 +19,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private room: Room = new Room();
   private markers: Array<User> = [];
   private friends: Array<User> = [];
-  private iconUrl: string;
+  // private iconUrl: string;
   private zoom: number = 15;
   private writerName: string;
   private getMessageSubscribe: any;
@@ -40,7 +40,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     (<any>Object).assign(this.user, this.userService.getCurrentUser());
     this.socketSerivce.initSocket(this.user);
     this.socketSerivce.getAllUsers(this.user._id);
-    this.iconUrl = this.user.iconUrl = `${environment.google_image_path}${this.user.username}.jpg`;
+    this.user.iconUrl = this.user.image ? `${environment.google_image_path}${this.user.username}.jpg` : `${environment.google_image_path}default.jpg`;
     this.initUserLocationOnMap();
     // this.getAllUsers();
     this.getMessageSubscribe = this.socketSerivce.getMessage().subscribe(data => {
@@ -69,7 +69,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       const length = this.friends.length;
       for (let i = 0; i < length; i++) {
         if (this.friends[i]._id == user._id) {
-          user['iconUrl'] = `${environment.google_image_path}${user.username}.jpg`
+          user['iconUrl'] = user.image ? `${environment.google_image_path}${user.username}.jpg` : `${environment.google_image_path}default.jpg`;
           user.unreadMessage = this.friends[i].unreadMessage;
           this.friends[i] = user;
           break;
@@ -162,7 +162,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private cloneArray(source) {
     let target = [];
     for (let obj of source) {
-      obj['iconUrl'] = `${environment.google_image_path}${obj.username}.jpg`
+      obj['iconUrl'] = obj.image ? `${environment.google_image_path}${obj.username}.jpg` : `${environment.google_image_path}default.jpg`;
       target.push((<any>Object).assign({}, obj));
     }
     return target;

@@ -37,13 +37,16 @@ var verifySocialAccount = function (accessToken, refreshToken, profile, done) {
                 return done(err, null);
             }
             if (user) {
-                user.socialId = profile.id;
-                user.provider = profile.provider;
-                user.name =  profile.displayName;
-                user.image = profile.photos[0].value;
+                user.displayName = profile.displayName;
                 user.gender = profile.gender;
-                user.provider = profile.provider;
-                user.profileUrl = profile._json.url || profile.profileUrl;
+                user.image = user.image ? user.image : profile.photos[0].value
+                if (profile.provider === 'facebook') {
+                    user.facebookImage = profile.photos[0].value;
+                    user.facebookProfileUrl = profile.profileUrl;
+                } else {
+                    user.googleImage = profile.photos[0].value;
+                    user.googleProfileUrl = profile._json.url;
+                }
                 user.save(function (err) {
                     if (err)
                         console.log(err);
@@ -51,18 +54,21 @@ var verifySocialAccount = function (accessToken, refreshToken, profile, done) {
                 });
             } else {
                 var newUser = new User();
-                newUser.socialId = profile.id;
                 newUser.email = profile.emails[0].value;
-                newUser.name = profile.displayName;
+                newUser.displayName = profile.displayName;
                 newUser.username = profile.emails[0].value.split('@')[0];
                 newUser.image = profile.photos[0].value;
                 newUser.gender = profile.gender;
-                newUser.provider = profile.provider;
-                newUser.profileUrl = profile.link || profile.profileUrl;
+                if (profile.provider === 'facebook') {
+                    newUser.facebookImage = profile.photos[0].value;
+                    newUser.facebookProfileUrl = profile.profileUrl;
+                } else {
+                    newUser.googleImage = profile.photos[0].value;
+                    newUser.googleProfileUrl = profile._json.url;
+                }
                 newUser.setPassword("virender");
                 newUser.save(function (err) {
-                    if (err)
-                        console.log(err);
+                    console.log("err", err);
                     return done(null, newUser);
                 });
             }

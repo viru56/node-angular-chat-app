@@ -11,7 +11,7 @@ let UserSchema = new mongoose.Schema({
         lowercase: true,
         unique: true,
         required: [true, "can't be blank"],
-        match: [/^[a-zA-Z0-9]+$/, "in invalid"],
+        match: [/^[a-zA-Z0-9.,@:?!()$#/\\]+$/, "in invalid"],
         index: true
     },
     email: {
@@ -23,6 +23,8 @@ let UserSchema = new mongoose.Schema({
         index: true
     },
     image: String,
+    googleImage: String,
+    facebookImage: String,
     hash: String,
     salt: String,
     phone: {
@@ -44,16 +46,12 @@ let UserSchema = new mongoose.Schema({
     socketId: String,
     latitude: Number,
     longitude: Number,
-    unreadMessage:Number,
-    connection:String,
-    socialId: String,
+    unreadMessage: Number,
+    connection: String,
     gender: String,
-    provider: {
-        type: String,
-        default: 'native'
-    },
-    profileUrl: String,
-    name: String
+    googleProfileUrl: String,
+    facebookProfileUrl: String,
+    displayName: String
 }, { timestamps: true });
 
 UserSchema.plugin(uniqueValidator, { message: "is already taken." });
@@ -94,9 +92,9 @@ UserSchema.methods.toAuthJSON = function () {
         latitude: this.latitude || 0,
         longitude: this.longitude || 0,
         logedIn: this.logedIn,
-        provider: this.provider,
-        profileUrl: this.profileUrl,
         socketId: this.socketId || null,
+        googleProfileUrl: this.googleProfileUrl,
+        facebookProfileUrl: this.facebookProfileUrl,
         token: this.generateJwt()
     };
 };
