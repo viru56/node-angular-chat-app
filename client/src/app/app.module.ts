@@ -20,7 +20,8 @@ import {
   AuthGuard,
   NoAuthGuard,
   ChatService,
-  SocketSerivce
+  SocketSerivce,
+  MapService
 } from './services';
 
 import { ToastModule } from 'ng2-toastr';
@@ -53,7 +54,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([], { useHash: fal
     AuthGuard,
     NoAuthGuard,
     ChatService,
-    SocketSerivce
+    SocketSerivce,
+    MapService
   ],
   bootstrap: [AppComponent]
 })
