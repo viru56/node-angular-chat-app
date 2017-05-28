@@ -8,7 +8,7 @@ import { AppComponent } from './app.component';
 import { HeaderComponent } from './header';
 import { FooterComponent } from './footer';
 import { HomeModule } from './home';
-import { SignupModule } from './signup';
+// import { SignupModule } from './signup';
 import { ProfileModule } from './profile';
 import { ChatModule } from './chat';
 import { ErrorModule } from './error';
@@ -20,7 +20,8 @@ import {
   AuthGuard,
   NoAuthGuard,
   ChatService,
-  SocketSerivce
+  SocketSerivce,
+  MapService
 } from './services';
 
 import { ToastModule } from 'ng2-toastr';
@@ -34,7 +35,7 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([], { useHash: fal
     HttpModule,
     HomeModule,
     rootRouting,
-    SignupModule,
+   // SignupModule,
     ProfileModule,
     ChatModule,
     ErrorModule,
@@ -53,7 +54,8 @@ const rootRouting: ModuleWithProviders = RouterModule.forRoot([], { useHash: fal
     AuthGuard,
     NoAuthGuard,
     ChatService,
-    SocketSerivce
+    SocketSerivce,
+    MapService
   ],
   bootstrap: [AppComponent]
 })

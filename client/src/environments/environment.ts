@@ -8,5 +8,7 @@ export const environment = {
   base_url: "http://localhost:3000",
   api_url: 'http://localhost:3000/api',
   google_image_path: 'http://localhost:3000/images/',
-  ipInfo_url: 'http://ipinfo.io'
+  ipInfo_url: 'http://ipinfo.io',
+  google_street_view:'https://maps.googleapis.com/maps/api/streetview?',
+  google_api_key: 'AIzaSyBkCrRk81jIwnUfMooaAMF70_6XR3Ha0w4'
 };

@@ -5,3 +5,4 @@ export * from './socket.service';
 export * from './jwt.service';
 export * from './auth-guard.service';
 export * from './no-auth-guard.service';
+export * from './map.service';

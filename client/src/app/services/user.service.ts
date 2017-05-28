@@ -61,7 +61,20 @@ export class UserService {
                 return data;
             });
     }
-
+    login(user): Observable<User> {
+        return this.apiService.post(`/user/login`, { user })
+            .map(data => {
+                this.setAuth(data.user);
+                return data;
+            });
+    }
+    createUser(user): Observable<User>{
+        return this.apiService.post(`/user`, { user })
+            .map(data => {
+                this.setAuth(data.user);
+                return data;
+            });
+    }
     updateUser(user): Observable<User> {
         return this.apiService
             .put('/user', { user })
@@ -74,8 +87,8 @@ export class UserService {
     googleLogin(): void {
         window.location.href = `${environment.api_url}/auth/google`;
     }
-     // login with facebook
-    facebookLogin(){
+    // login with facebook
+    facebookLogin() {
         window.location.href = `${environment.api_url}/auth/facebook`;
     }
 
@@ -87,7 +100,7 @@ export class UserService {
             this.router.navigateByUrl('/chat');
         });
     }
-   
+
     getCurrentUser(): User {
         return this.currentUserSubject.value;
     }

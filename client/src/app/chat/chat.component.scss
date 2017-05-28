@@ -1,0 +1,167 @@
+
+    /* css for map */
+    .map-chat{
+        position: relative;
+        height: 100%;
+    }
+    #map {
+        height: 100%;
+        width: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        overflow: hidden; 
+        z-index: 0;
+    }
+    .user-map-info-window{
+        width: 291px;
+        position:relative;
+        min-height: 50px; 
+        overflow: hidden;
+    }
+    .user-map-info-window-image{
+        width: 60px;
+        height: 60px;
+        position: absolute;
+    }
+    .user-map-info-window-address{
+        padding: 4px 4px 4px 70px;
+    }
+    .user-img-map {
+        width:50px;
+        height: 50px;
+        border-radius: 5px;
+    }
+    /* css for map */
+
+    .pano{
+        float: right;
+        position: relative;
+        width: 300px;
+        height: 150px;
+        background: none !important;
+        margin: 4px 4px 0 0;
+    }
+    .chat-panel{
+    margin: 4px 0 30px 4px;
+        width: 340px;
+        float: left;
+        position: relative;
+    }
+    @media (max-width: 768px){
+        .chat-panel{
+            width: 295px;
+        }
+    }
+    .panel-icon{
+        padding: 4px;
+    }
+    .panel-heading {
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+    .panel-footer  {
+        padding: 0;
+        border-bottom-right-radius: 0;
+        border-bottom-left-radius: 0;
+    }
+    .panel-footer .form-control{
+        border-radius: 0;
+    }
+    .panel-group .panel{
+        border-radius: 0;
+    }
+    .p-g-width{
+    width:  150px;
+    }
+    .panel-body {
+        padding: 4px;
+    }
+    .panel-body .sender{
+    text-align: left;
+    }
+    .panel-body .sender span{
+    background-color: #f2f2f2;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 3px #B2B2B2;
+    }
+    .panel-body .receiver{
+        text-align: right;
+    }
+    .panel-body .chat-area{
+        max-height: 150px;
+        overflow: hidden;
+        width: 100%;
+        overflow-y: visible;
+    }
+    .panel-body .receiver span{
+    background-color: #ADD8E6;
+    padding: 5px;
+    border-radius: 10px;
+    box-shadow: 0 0 3px #B2B2B2;
+    }
+    .chat-main-ul{
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        font: initial;
+    }
+    .chat-main-ul li .panel-heading {
+        padding-left: 5px;
+        height: 39px;
+    }
+    .chat-main-ul li {
+        margin-bottom: 4px;
+    }
+    .chat-main-ul li:hover {
+        border: 1px solid #337ab7;
+    }
+    .display-block {
+        display: block;
+    }
+    .display-none {
+        display: none;
+    }
+    .userImg {
+        border-radius: 20px;
+        margin-top: -6px;
+    }
+
+    .chat-panel-list{
+        overflow: hidden;
+        max-height: 539px;
+        overflow-y: visible;
+        background: #ddd;
+    }
+
+    .panel-default p {
+        margin: 0 0 5px;
+    }
+    .panel-default .message{
+        font-size: 14px;
+        width: 100%;
+        padding: 5px;
+    }
+    .panel-default hr {
+        margin: 0;
+        padding-bottom: 2px
+    }
+
+    .writer{
+        padding-left: 5px;
+        font-size: 13px;
+    }
+    .unread{
+        margin-left: 50px;
+        background: #337ab7;
+        padding: 4px 8px 4px 8px ;
+        border-radius: 50%;
+        color: #fff;
+    }
+
+    ::-webkit-scrollbar
+    {
+    width: 0;  /* for vertical scrollbars */
+    }
