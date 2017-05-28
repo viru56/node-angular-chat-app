@@ -13,6 +13,7 @@ import { ChatDialog } from './chat-dialog/chat-dialog.component';
 export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scroll') private chatDiv: ElementRef;
   @ViewChild('map') private mapElement: ElementRef;
+  @ViewChild('pano') private panoElement: ElementRef;
   private showPanel: string = null;
   private content: string = "";
   private showList: boolean = true;
@@ -43,7 +44,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socketSerivce.initSocket(this.user);
     this.socketSerivce.getAllUsers(this.user._id);
     // initilize map
-    this.mapService.initMap(this.mapElement.nativeElement);
+    this.mapService.initMap(this.mapElement.nativeElement,this.panoElement.nativeElement);
 
     // get Lat and long of user and update his/her location
     this.mapService.getUserLocation((latlng) => {

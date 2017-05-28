@@ -10,13 +10,22 @@ import { User } from '../models';
 })
 export class HeaderComponent implements OnInit {
   currentUser: User = new User();
+  private showHeader: boolean = false;
   private logo: string = "/src/assets/images/logo.png"
   constructor(
     private userService: UserService
   ) { }
 
   ngOnInit() {
-    this.userService.currentUser.subscribe(user => this.currentUser = user);
+    this.userService.currentUser.subscribe(user => {
+      this.currentUser = user;
+      if(this.currentUser.username){
+        this.showHeader = true;
+      }
+      else{
+        this.showHeader = false;
+        }
+    });
   }
 
 }

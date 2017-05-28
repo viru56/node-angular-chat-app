@@ -1,18 +1,123 @@
-<section class="hero">
-  <div class="hero-content">
-    <h2> Welcome to the Site</h2>
-    <p>This is a angular2 app</p>
+<!--<app-signup>  </app-signup>-->
+<div class="hero row">
+  <div class="hero-title col-md-3 col-xs-4">
+    Connecting People
   </div>
-</section>
-<div class="jumbotron text-center">
-  <h3> Home Page </h3>
-  <p>Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature
-    from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia,
-    looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of
-    the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33
-    of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise
-    on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..",
-    comes from a line in section 1.10.32.
-  </p>
-  
+  <div class="col-md-9 col-xs-8">
+    <div class="hero-content">
+      <form class="showLoginForm" [formGroup]="loginForm">
+        <table cellspacing="0">
+          <tbody>
+            <tr>
+              <td>
+                <input type="text" class="form-input" placeholder="username or email" formControlName="email">
+              </td>
+              <td>
+                <input type="password" class="form-input" placeholder="password" formControlName="password">
+              </td>
+              <td>
+                <button class="btn btn-sm btn-primary" (click)="login()">Log In</button>
+              </td>
+            </tr>
+            <tr>
+              <td>
+                <div *ngIf="error" class="error">{{error}}</div>
+              </td>
+              <td colspan="2">
+                <a class="forgot-password"> forgot password?</a>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </form>
+      <div class="showSignInBtn">
+        <button class="btn btn-sm btn-primary" type="submit">Sign In</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Create New Account-->
+<div class="row main">
+  <div class="col-md-7 demo">
+    <div class="text-center"> Find your friends, loved one and chat with them</div>
+    <img [src]="demoImg" class="img-responsive demo-img" alt="main-image">
+  </div>
+  <div class="main-center col-md-5 col-xs-12">
+
+    <div class="title">
+      Login with
+    </div>
+    <div class="social-login row">
+      <div class="col-md-6 col-xs-6">
+        <button (click)="loginWithGoogle()" class="btn btn-danger googleBtn"> <i class="fa fa-google"></i>oogle</button>
+      </div>
+      <div class="col-md-6 col-xs-6">
+        <button (click)="loginWithFacebook()" class="btn  btn-primary facebookBtn"> <i class="fa fa-facebook"></i>acebook</button>
+      </div>
+    </div>
+    <div class="title">
+      Create new Account
+      <div class="error" *ngIf="formError">{{formError}}</div>
+    </div>
+    <form [formGroup]="registerForm" novalidate>
+      <div class="form-group">
+        <input type="text" class="form-control" formControlName="displayName" placeholder="Enter your Full Name" />
+        <!-- display name error-->
+        <div class="error" *ngIf="registerForm.get('displayName').hasError('required') && registerForm.get('displayName').touched">
+          Display Name is required
+        </div>
+        <div class="error" *ngIf="registerForm.get('displayName').hasError('pattern') && registerForm.get('displayName').touched">
+          Display Name is not valid
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="email" class="form-control" formControlName="email" placeholder="Enter your Email" />
+        <!-- Email name error-->
+        <div class="error" *ngIf="registerForm.get('email').hasError('required') && registerForm.get('email').touched">
+          Email is required
+        </div>
+        <div class="error" *ngIf="registerForm.get('email').hasError('pattern') && registerForm.get('email').touched">
+          Email is not valid
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="text" class="form-control" formControlName="username" placeholder="Enter your Username" />
+        <!-- username error-->
+        <div class="error" *ngIf="registerForm.get('username').hasError('required') && registerForm.get('username').touched">
+          User Name is required
+        </div>
+        <div class="error" *ngIf="registerForm.get('username').hasError('pattern') && registerForm.get('username').touched">
+          User Name is not valid
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="number" class="form-control" formControlName="phone" placeholder="Enter your Mobile Number (optional)" />
+        <!-- phone error-->
+        <div class="error" *ngIf="registerForm.get('phone').hasError('pattern') && registerForm.get('phone').touched">
+          Phone is not valid
+        </div>
+      </div>
+
+      <div class="form-group">
+        <input type="password" class="form-control" formControlName="password" placeholder="Enter your Password" />
+        <!-- Password error-->
+        <div class="error" *ngIf="registerForm.get('password').hasError('required') && registerForm.get('password').touched">
+          password is required
+        </div>
+        <div class="error" *ngIf="registerForm.get('password').hasError('minlength') && registerForm.get('password').touched">
+          password is minimum of 4 characters
+        </div>
+        <div class="error" *ngIf="registerForm.get('password').hasError('maxlength') && registerForm.get('password').touched">
+          password is maximum of 20 characters
+        </div>
+      </div>
+      <div class="form-group ">
+        <button class="btn btn-primary btn-lg btn-block login-button" [disabled]="registerForm.invalid" (click)="createNewUser()">Register</button>
+      </div>
+
+    </form>
+  </div>
 </div>

@@ -45,12 +45,9 @@ router.post('/user', (req, res, next) => {
     var user = new User();
     user.username = req.body.user.username;
     user.email = req.body.user.email;
+    user.displayName = req.body.user.displayName;
     user.setPassword(req.body.user.password.toString());
     user.save().then(() => {
-        //save user image in small size for showing on map 
-        if (user.image) {
-            saveImage(user.image, user.username);
-        }
         return res.json({ user: user.toAuthJSON() });
     }).catch(next);
 });
@@ -101,7 +98,7 @@ router.post('/user/login', (req, res, next) => {
         })
     }
     if (!req.body.user.email) {
-        return res.status(422).json({ errors: { email: "can't be blank" } });
+        return res.status(422).json({ errors: { 'email or username': "can't be blank" } });
     }
     if (!req.body.user.password) {
         return res.status(422).json({ errors: { password: "can't be blank" } });
@@ -141,7 +138,7 @@ router.get('/auth/facebook/callback',
     }
 );
 
-var saveImage = function (imgUrl, username, cb) {
+const saveImage = function (imgUrl, username, cb) {
     //var filePath = `.\\public\\images\\${username}.jpg`;
     var filePath = path.join(__dirname, '../../', 'public', 'images', `${username}.jpg`);
     if (!fs.existsSync(filePath)) {

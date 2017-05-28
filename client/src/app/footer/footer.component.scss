@@ -7,13 +7,12 @@ footer{
     position: fixed;
     bottom: 0;
     width: 100%;
-}
-footer .content {
-    margin-left: 10px;
-    font-size: 0.8rem;
-    color: #bbb;
-}
-
-footer a {
-    color: #fff;
+    .content {
+        margin-left: 10px;
+        font-size: 0.8rem;
+        color: #bbb;
+    }
+    a {
+        color: #fff;
+    }
 }

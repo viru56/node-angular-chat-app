@@ -92,6 +92,7 @@ UserSchema.methods.toAuthJSON = function () {
         latitude: this.latitude || 0,
         longitude: this.longitude || 0,
         logedIn: this.logedIn,
+        displayName: this.displayName,
         socketId: this.socketId || null,
         googleProfileUrl: this.googleProfileUrl,
         facebookProfileUrl: this.facebookProfileUrl,
