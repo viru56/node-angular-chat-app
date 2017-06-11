@@ -1,8 +1,8 @@
 <section class="hero">
-  <div class="hero-content" >
+  <div class="hero-content">
     <img [src]="user.image" *ngIf="user.image" class="userImg" />
     <h3>{{user.username}}</h3>
-     <button  class="btn btn-lg btn-danger btn-logout" (click)="logout()">Click here to logout</button>    
+    <button class="btn btn-lg btn-danger btn-logout" (click)="logout()">Click here to logout</button>
   </div>
 </section>
 <div class="container">
@@ -14,13 +14,16 @@
       </ul>
       <form [formGroup]="profileForm" (ngSubmit)="submitForm()">
         <div class="form-group">
-          <input placeholder="Url of profile picture" formControlName="image" class="form-control" type="text" />
+          <input placeholder="Full Name" formControlName="displayName" class="form-control" type="text" />
         </div>
         <div class="form-group">
           <input placeholder="Username" formControlName="username" class="form-control" type="text" />
         </div>
         <div class="form-group">
           <input placeholder="Email" class="form-control" formControlName="email" type="text" />
+        </div>
+        <div class="form-group">
+          <input placeholder="Url of profile picture" formControlName="image" class="form-control" type="text" />
         </div>
         <div class="form-group">
           <input placeholder="Phone" class="form-control" formControlName="phone" type="number" />

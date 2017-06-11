@@ -31,7 +31,7 @@
         </table>
       </form>
       <div class="showSignInBtn">
-        <button class="btn btn-sm btn-primary" type="submit">Sign In</button>
+        <button class="btn btn-sm btn-primary" type="submit" (click)="toggleLogin()">{{btnTitle}}</button>
       </div>
     </div>
   </div>
@@ -56,10 +56,11 @@
       </div>
     </div>
     <div class="title">
-      Create new Account
+      <span *ngIf="btnTitle ==='Sign In'"> Create new Account </span>
+      <span *ngIf="btnTitle ==='Sign Up'"> OR </span>
       <div class="error" *ngIf="formError">{{formError}}</div>
     </div>
-    <form [formGroup]="registerForm" novalidate>
+    <form [formGroup]="registerForm" novalidate *ngIf="btnTitle==='Sign In'">
       <div class="form-group">
         <input type="text" class="form-control" formControlName="displayName" placeholder="Enter your Full Name" />
         <!-- display name error-->
@@ -116,6 +117,20 @@
       </div>
       <div class="form-group ">
         <button class="btn btn-primary btn-lg btn-block login-button" [disabled]="registerForm.invalid" (click)="createNewUser()">Register</button>
+      </div>
+
+    </form>
+
+    <form [formGroup]="loginForm" novalidate *ngIf="btnTitle==='Sign Up'">
+      <div class="form-group">
+        <input type="email" class="form-control" formControlName="email" placeholder="username or email" />
+      </div>
+
+      <div class="form-group">
+        <input type="password" class="form-control" formControlName="password" placeholder="Enter your Password" />
+      </div>
+      <div class="form-group ">
+        <button class="btn btn-primary btn-lg btn-block login-button" [disabled]="loginForm.invalid" (click)="login()">Log In</button>
       </div>
 
     </form>

@@ -105,7 +105,12 @@ export class MapService {
                     pov: {
                         heading: 34,
                         pitch: 10
-                    }
+                    },
+                    visible: false,
+                    fullscreenControl: false,
+                    zoomControl: false,
+                    panControl: false,
+                    addressControl: false
                 });
                 this.map.setStreetView(panorama);
             }, 100);
@@ -134,7 +139,6 @@ export class MapService {
     }
 
     private calculateRoute(marker) {
-        console.log(marker.user);
         const self = this;
         const request = {
             origin: `${this.currentPosition.latitude},${this.currentPosition.longitude}`,
@@ -176,6 +180,10 @@ export class MapService {
                                         </div>`;
         this.infowindow.setContent(contentString);
         this.infowindow.open(this.map, marker);
+        const self = this;
+        this.infowindow.addListener('closeclick', () => {
+            self.directionsDisplay.setMap(null);
+        })
     }
 
     // get user address - not in use

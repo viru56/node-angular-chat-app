@@ -58,6 +58,9 @@ router.put('/user', auth.required, (req, res, next) => {
         if (!user) {
             return res.sendStatus(401);
         }
+        if (typeof req.body.user.displayName !== "undefined") {
+            user.displayName = req.body.user.displayName;
+        }
         if (typeof req.body.user.username !== "undefined") {
             user.username = req.body.user.username;
         }

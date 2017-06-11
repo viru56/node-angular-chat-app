@@ -42,6 +42,7 @@ export class ProfileComponent implements OnInit {
       image: '',
       phone: '',
       password: '',
+      displayName:''
     });
   }
   private updateUser(values: Object) {

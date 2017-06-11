@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   @ViewChild('scroll') private chatDiv: ElementRef;
   @ViewChild('map') private mapElement: ElementRef;
   @ViewChild('pano') private panoElement: ElementRef;
+  
   private showPanel: string = null;
   private content: string = "";
   private showList: boolean = true;

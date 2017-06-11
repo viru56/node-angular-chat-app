@@ -5,7 +5,7 @@
      Connecting People
     </a>-->
      <a class="navbar-brand" routerLink="/">
-     C<sub>P</sub> {{showHeader}}
+     C<sub>P</sub>
     </a>
     <!-- logged out users -->
     <!--<ul class="nav navbar-nav navbar-right" >
@@ -28,7 +28,7 @@
         <a class="nav-link" routerLink="/profile" routerLinkActive="active">
 
           <img [src]="currentUser.image" *ngIf="currentUser.image" class="img-responsive userImg" /> 
-          {{currentUser.username}}
+           {{currentUser.displayName}}
         </a>
       </li>
     </ul>

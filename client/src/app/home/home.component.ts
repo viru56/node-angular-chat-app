@@ -15,6 +15,7 @@ export class HomeComponent implements OnInit {
   private demoImg: string = '/src/assets/images/demo.png';
   private error: string = null;
   private formError: string = null;
+  private btnTitle: string = "Sign In";
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -74,7 +75,8 @@ export class HomeComponent implements OnInit {
         this.router.navigateByUrl('/chat');
       }, err => {
         console.log(err);
-        this.error = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}`;
+        this.btnTitle === "Sign In" ? this.error = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}` :
+          this.formError = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}`
       });
 
   }
@@ -91,7 +93,12 @@ export class HomeComponent implements OnInit {
   private loginWithGoogle() {
     this.userService.googleLogin();
   }
-  private loginWithFacebook(){
+  private loginWithFacebook() {
     this.userService.facebookLogin();
+  }
+  private toggleLogin() {
+    this.formError = null;
+    this.error = null;
+    this.btnTitle === "Sign In" ? this.btnTitle = "Sign Up" : this.btnTitle = "Sign In";
   }
 }

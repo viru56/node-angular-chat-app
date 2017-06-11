@@ -14,7 +14,7 @@
               <div class="panel panel-default">
                 <div class="panel-heading" (click)="mainLiClick(user)">
                   <img [src]='user.iconUrl' class="userImg pull-left" />
-                  <div class="username pull-right"><b> {{user.username}}</b></div>
+                  <div class="username pull-right"><b> {{user.displayName}}</b></div>
                 </div>
                 <div class="panel-body" [ngClass]="{'display-block': user._id === showPanel, 'display-none': user._id !== showPanel}">
                   <p *ngIf="user.phone">Phone - <span> {{user.phone}}</span></p>
@@ -30,7 +30,7 @@
                   <span class="writer" *ngIf="writerName !== fr.username && fr.logedIn.isLogedIn == false">offline </span>
                   <span class="writer" *ngIf="writerName === fr.username"> is typing...</span>
                   <span class="unread" *ngIf="fr.unreadMessage > 0">{{fr.unreadMessage}} </span>
-                  <div class="username pull-right"><b> {{fr.username}}</b></div>
+                  <div class="username pull-right"><b> {{fr.displayName}}</b></div>
                 </div>
                 <div [ngClass]="{'display-block': fr._id === showPanel, 'display-none': fr._id !== showPanel}">
                   <div class="panel-body ">

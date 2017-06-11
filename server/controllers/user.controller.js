@@ -8,7 +8,7 @@ module.exports = {
 }
 
 function findAllUsers(userId, cb) {
-    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1, 'logedIn': 1, 'socketId': 1 };
+    var projection = { 'email': 1, 'username': 1, 'image': 1, 'latitude': 1, 'longitude': 1, 'phone': 1, 'logedIn': 1, 'socketId': 1,'displayName':1,'googleProfileUrl':1,'facebookProfileUrl':1 };
     User.find({ _id: { $ne: userId } }, projection)
         .then((users) => {
             Room.findAllRooms(userId, (err, rooms) => {
