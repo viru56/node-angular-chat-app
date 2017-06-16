@@ -43,11 +43,41 @@
         background: none !important;
         margin: 4px 4px 0 0;
     }
-    .chat-panel{
-    margin: 4px 0 30px 4px;
-        width: 340px;
-        float: left;
+
+    .side-bar{
+        width: 50px;
+        background-color: cadetblue;
         position: absolute;
+        height: 100%;
+        text-align: right;
+        padding-top: 58px;
+       tooltip-content {
+            margin-left: 9px!important;
+        }
+        .panel-group{
+            .panel{
+                background-color: cadetblue;
+                cursor: pointer;
+                margin-top: 0.5px !important;
+            }
+            .panel-active{
+                background-color: darkcyan;
+            }
+        } 
+            
+         .panel-group .panel:hover{
+            background-color: darkcyan;
+        }
+    }
+    .side-bar i {
+        color: #ddd;
+        margin: 8px 8px 8px 0;
+    }
+    .chat-panel{
+        margin: 4px 0 30px 40px;
+        width: 340px;
+        position: absolute;
+        top: 54px;
     }
     @media (max-width: 768px){
         .chat-panel{
@@ -71,6 +101,7 @@
     }
     .panel-group .panel{
         border-radius: 0;
+        border: none;
     }
     .p-g-width{
     width:  150px;

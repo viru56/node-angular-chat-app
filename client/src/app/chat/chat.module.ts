@@ -3,6 +3,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
+import { TooltipModule } from 'ng2-tooltip';
 
 import { ChatDialog } from './chat-dialog/chat-dialog.component';
 import { ChatComponent } from './chat.component';
@@ -22,10 +23,11 @@ const chatRouting: ModuleWithProviders = RouterModule.forChild([
         CommonModule,
         FormsModule,
         ReactiveFormsModule,
-        BootstrapModalModule
+        BootstrapModalModule,
+        TooltipModule
     ],
     declarations: [ChatComponent, ChatDialog],
-    entryComponents: [ ChatDialog ],
+    entryComponents: [ChatDialog],
     providers: []
 })
 export class ChatModule { }

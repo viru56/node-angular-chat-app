@@ -18,6 +18,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   private showPanel: string = null;
   private content: string = "";
   private showList: boolean = true;
+  private panelHeading: string = "Friends";
   private messages: Array<Chat> = [];
   private user: User = new User();
   private room: Room = new Room();
@@ -179,6 +180,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
   private showUserList() {
     this.showList = !this.showList;
+  }
+  private showChatPanel(panel){
+    this.showList = true;
+    this.panelHeading = panel;
   }
 
   // open chat dialog om dblClick

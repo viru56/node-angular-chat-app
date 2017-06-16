@@ -1,14 +1,30 @@
 <div class="map-chat">
   <div class="map" #map id="map"></div>
   <div class="pano" id="pano" #pano></div>
-  <section class="row chat-panel">
-    <div class="panel-group" [ngClass]="{'p-g-width':!showList }">
+  <div class="row side-bar">
+    <div class=" panel-group">
+      <div class="panel" (click)="showChatPanel('Friends')" [ngClass]="{'panel-active': panelHeading === 'Friends'}">
+        <i class="fa fa-address-book fa-lg" aria-hidden="true" tooltip="Friends" tooltipPlacement="right"></i>
+      </div>
+      <div class="panel"  (click)="showChatPanel('Users')" [ngClass]="{'panel-active': panelHeading === 'Users'}">
+        <i class="fa fa-users fa-lg" aria-hidden="true" tooltip="Users" tooltipPlacement="right"></i>
+      </div>
+       <div class="panel"  (click)="showChatPanel('Groups')" [ngClass]="{'panel-active': panelHeading === 'Groups'}">
+        <i class="fa fa-handshake-o fa-lg" aria-hidden="true" tooltip="Groups" tooltipPlacement="right"></i>
+      </div>
+       <div class="panel"  (click)="showChatPanel('Events')" [ngClass]="{'panel-active': panelHeading === 'Events'}">
+        <i class="fa fa-calendar fa-lg" aria-hidden="true" tooltip="Events" tooltipPlacement="right"></i>
+      </div>
+    </div>
+  </div>
+  <section class="row chat-panel" *ngIf="showList">
+    <div class="panel-group">
       <div class="panel panel-primary">
         <div class="panel-heading">
-          Friends
-          <i (click)="showUserList()" class=" fa fa-lg pull-right panel-icon" [ngClass]="{' fa-minus-circle ': showList, 'fa-plus-circle': !showList}"></i>
+         {{ panelHeading }}
+          <i (click)="showUserList()" class=" fa fa-lg pull-right panel-icon fa-times-circle"></i>
         </div>
-        <div class="panel-body chat-panel-list" *ngIf="showList">
+        <div class="panel-body chat-panel-list">
           <ul class="chat-main-ul">
             <li>
               <div class="panel panel-default">
