@@ -6,24 +6,16 @@ module.exports = (app, server) => {
     var io = require('socket.io').listen(server);
 
     io.on('connection', (socket) => {
-        socket.on('join', (userId) => {
+        socket.on('join', (user) => {
             // console.log('user joined', socket.id);
-            socket.userId = userId;
-            var query = {
-                _id: userId,
-                socketId: socket.id,
-                logedIn: {
-                    isLogedIn: true,
-                    lastLogedIn: new Date()
-                }
-            }
-            User.updateUser(query, (err, user) => {
-                if (user) {
-                    socket.broadcast.emit('user-join-left', user);
-                } else {
-                    socket.broadcast.to(socket.id).emit('user-join-left', err); //not implimented yet clinet side future ref
-                }
-            });
+            socket.userId = user._id;
+            user.socketId = socket.id;
+            user.logedIn = {
+                isLogedIn: true,
+                lastLogedIn: new Date()
+            };
+            User.updateUser(user);
+            socket.broadcast.emit('user-join-left', user);
         });
 
         socket.on('get-users', (userId) => {

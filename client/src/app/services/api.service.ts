@@ -39,6 +39,17 @@ export class ApiService {
             .map((res: Response) => res.json());
 
     }
+    getThirdPartyAPI(path: string, params: URLSearchParams = new URLSearchParams()): Observable<any> {
+        return this.http.get(`${path}`,
+            {
+                headers: this.setHeaders(),
+                search: params
+            }
+        )
+            .catch(this.formatError)
+            .map((res: Response) => res.json());
+
+    }
     post(path: string, body: Object = {}): Observable<any> {
         return this.http.post(`${environment.api_url}${path}`,
             JSON.stringify(body),

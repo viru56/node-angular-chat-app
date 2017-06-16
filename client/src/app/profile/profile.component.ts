@@ -9,7 +9,7 @@ import { User } from '../models';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
-  styleUrls: ['./profile.component.css']
+  styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
   private user: User = new User();
@@ -42,6 +42,7 @@ export class ProfileComponent implements OnInit {
       image: '',
       phone: '',
       password: '',
+      displayName:''
     });
   }
   private updateUser(values: Object) {

@@ -8,19 +8,20 @@ export class SocketSerivce {
         this.socket = io(environment.base_url);
     }
     // update all users to join 
-    initSocket(userId) {
+    initSocket(user: User) {
+        console.log('initSocket');
         if (this.socket.json.connected) {
-            this.socket.emit('join', userId);
+            this.socket.emit('join', user);
         } else {
             this.socket = io(environment.base_url);
-            this.socket.emit('join', userId);
+            this.socket.emit('join', user);
         }
     }
 
     userJoinLeft() {
         let observable = new Observable<User>(observer => {
-            this.socket.on('user-join-left', (data) => {
-                observer.next(data);
+            this.socket.on('user-join-left', (user) => {
+                observer.next(user);
             });
             return () => {
                 this.socket.disconnect();
@@ -33,7 +34,7 @@ export class SocketSerivce {
     setWriter(data) {
         this.socket.emit('get-writer', data);
     }
-     getWriter() {
+    getWriter() {
         let observable = new Observable<string>(observer => {
             this.socket.on('set-writer', (writerName) => {
                 observer.next(writerName);
@@ -48,8 +49,8 @@ export class SocketSerivce {
     sendMessage(data) {
         this.socket.emit('get', data);
     }
-    updateUnreadMessageToZero(connetion){
-        this.socket.emit('room-update',connetion);
+    updateUnreadMessageToZero(connetion) {
+        this.socket.emit('room-update', connetion);
     }
     getMessage() {
         let observable = new Observable<any>(observer => {
@@ -116,5 +117,5 @@ export class SocketSerivce {
     //     return observable;
     // }
 
-   
+
 }

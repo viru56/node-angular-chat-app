@@ -1,12 +1,13 @@
-var mongoose = require('mongoose');
-var router = require('express').Router();
-var passport = require('passport');
-var request = require('request');
-
-var User = mongoose.model('User');
-var auth = require('../auth');
-var fs = require('fs');
-var Jimp = require("jimp");
+var mongoose = require('mongoose'),
+    router = require('express').Router(),
+    passport = require('passport'),
+    request = require('request'),
+    path = require('path'),
+    fs = require('fs'),
+    User = mongoose.model('User'),
+    auth = require('../auth'),
+    fs = require('fs'),
+    Jimp = require("jimp");
 
 router.get('/user', auth.required, (req, res, next) => {
     User.findById(req.payload.id).then(user => {
@@ -29,7 +30,6 @@ router.get('/users', auth.required, (req, res, next) => {
 });
 
 router.post('/user', (req, res, next) => {
-
     if (!req.body.user) {
         return res.status(422).json({
             errors: {
@@ -45,20 +45,21 @@ router.post('/user', (req, res, next) => {
     var user = new User();
     user.username = req.body.user.username;
     user.email = req.body.user.email;
+    user.displayName = req.body.user.displayName;
     user.setPassword(req.body.user.password.toString());
     user.save().then(() => {
-        //save user image in small size for showing on map 
-        if (user.image) {
-            saveImage(user.image, user.username);
-        }
         return res.json({ user: user.toAuthJSON() });
     }).catch(next);
 });
 
 router.put('/user', auth.required, (req, res, next) => {
+    console.log(req.payload.id);
     User.findById(req.payload.id).then(user => {
         if (!user) {
             return res.sendStatus(401);
+        }
+        if (typeof req.body.user.displayName !== "undefined") {
+            user.displayName = req.body.user.displayName;
         }
         if (typeof req.body.user.username !== "undefined") {
             user.username = req.body.user.username;
@@ -100,7 +101,7 @@ router.post('/user/login', (req, res, next) => {
         })
     }
     if (!req.body.user.email) {
-        return res.status(422).json({ errors: { email: "can't be blank" } });
+        return res.status(422).json({ errors: { 'email or username': "can't be blank" } });
     }
     if (!req.body.user.password) {
         return res.status(422).json({ errors: { password: "can't be blank" } });
@@ -118,19 +119,42 @@ router.post('/user/login', (req, res, next) => {
         }
     })(req, res, next);
 });
+// GET /auth/google
 
-var saveImage = function (imgUrl, username) {
-    var filePath = `.\\public\\images\\${username}.jpg`;
-    Jimp.read(imgUrl, function (err, image) {
-        if (err) {
-            console.log(err);
-        } else {
+router.get('/auth/google', passport.authenticate('google', { scope: ['email', 'profile'] }));
+// GET /auth/google/callback
+router.get('/auth/google/callback',
+    passport.authenticate('google', { failureRedirect: '/login' }),
+    function (req, res) {
+        saveImage(req.user.image, req.user.username, () => {
+            return res.json(req.user.toAuthJSON());
+        });
+    }
+);
+router.get('/auth/facebook', passport.authenticate('facebook', { scope: 'email' }));
+router.get('/auth/facebook/callback',
+    passport.authenticate('facebook', { failureRedirect: '/login' }),
+    function (req, res) {
+        saveImage(req.user.image, req.user.username, () => {
+            return res.json(req.user.toAuthJSON());
+        });
+    }
+);
+
+const saveImage = function (imgUrl, username, cb) {
+    //var filePath = `.\\public\\images\\${username}.jpg`;
+    var filePath = path.join(__dirname, '../../', 'public', 'images', `${username}.jpg`);
+    if (!fs.existsSync(filePath)) {
+        Jimp.read(imgUrl).then((image) => {
             image.resize(30, 30)
-                .quality(100)
+                .quality(60)
                 .autocrop()
                 .write(filePath);
-        }
-    }).catch(err => console.log(err));
+            if (cb) cb();
+        }).catch((err) => { if (cb) { cb(); } });
+    } else {
+        if (cb) { cb() };
+    }
 };
 
 module.exports = router;

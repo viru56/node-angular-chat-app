@@ -1,20 +1,23 @@
-<header>
+<header *ngIf="showHeader">
   <nav class="navbar bg-primary">
     <!--<img [src]="logo" class="logo" />-->
-    <a class="navbar-brand" routerLink="/">
+    <!--<a class="navbar-brand" routerLink="/">
      Connecting People
+    </a>-->
+     <a class="navbar-brand" routerLink="/">
+     C<sub>P</sub>
     </a>
     <!-- logged out users -->
-    <ul *appShowAuth="false" class="nav navbar-nav navbar-right">
+    <!--<ul class="nav navbar-nav navbar-right" >
       <li class="nav-item ">
         <a class="nav-link" routerLink="/login" routerLinkActive="active">Sign in</a>
       </li>
       <li class="nav-item ">
         <a class="nav-link" routerLink="/register" routerLinkActive="active">Sign up</a>
       </li>
-    </ul>
+    </ul>-->
     <!-- logged in users -->
-    <ul *appShowAuth="true" class="nav navbar-nav navbar-right">
+    <ul  class="nav navbar-nav navbar-right" >
       <!--<li class="nav-item ">
         <a class="nav-link" routerLink="/" routerLinkActive="active">Home</a>
       </li>-->
@@ -23,7 +26,9 @@
       </li>
       <li class="nav-item ">
         <a class="nav-link" routerLink="/profile" routerLinkActive="active">
-          <img [src]="currentUser.image" *ngIf="currentUser.image" class="img-responsive userImg" /> {{currentUser.username}}
+
+          <img [src]="currentUser.image" *ngIf="currentUser.image" class="img-responsive userImg" /> 
+           {{currentUser.displayName}}
         </a>
       </li>
     </ul>
