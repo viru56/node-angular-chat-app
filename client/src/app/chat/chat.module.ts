@@ -3,7 +3,7 @@ import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BootstrapModalModule } from 'ng2-bootstrap-modal';
-import { TooltipModule } from 'ng2-tooltip';
+import { TooltipModule } from 'ngx-tooltip';
 
 import { ChatDialog } from './chat-dialog/chat-dialog.component';
 import { ChatComponent } from './chat.component';
