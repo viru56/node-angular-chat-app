@@ -77,6 +77,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.friends = this.cloneArray(users);
       this.markers = this.cloneArray(users);
       this.markers.push(this.user);
+      this.userService.UsersSubject.next(this.markers);
       this.mapService.setMarker(this.markers);
     });
     this.userJoinLeftSubscribe = this.socketSerivce.userJoinLeft().subscribe((user) => {

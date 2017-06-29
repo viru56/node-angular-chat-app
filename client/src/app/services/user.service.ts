@@ -16,6 +16,8 @@ import { User } from '../models';
 export class UserService {
     private currentUserSubject = new BehaviorSubject<User>(new User());
     public currentUser = this.currentUserSubject.asObservable().distinctUntilChanged();
+    public UsersSubject = new BehaviorSubject<Array<User>>(new User()[0]);
+    public Users = this.UsersSubject.asObservable().distinctUntilChanged();
 
     private isAuthenticatedSubject = new ReplaySubject<boolean>(1);
     public isAuthenticated = this.isAuthenticatedSubject.asObservable();
@@ -103,5 +105,8 @@ export class UserService {
 
     getCurrentUser(): User {
         return this.currentUserSubject.value;
+    }
+    getUsers(): User[] {
+        return this.UsersSubject.value;
     }
 }

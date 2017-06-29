@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 
-import { ApiService } from './api.service';
+import { ApiService, } from './api.service';
+import { UserService } from './user.service';
 import { environment } from '../../environments/environment';
 import { User } from '../models';
 
@@ -15,31 +16,27 @@ export class MapService {
     private currentPosition: any;
     private bounds: any;
     constructor(
-        private apiService: ApiService
+        private apiService: ApiService,
+        private userSerive: UserService
     ) {
         if (typeof google !== 'undefined') {
-            this.bounds = new google.maps.LatLngBounds();
-            this.geocoder = new google.maps.Geocoder;
-            this.infowindow = new google.maps.InfoWindow;
-            this.directionsService = new google.maps.DirectionsService;
-            this.directionsDisplay = new google.maps.DirectionsRenderer({
-                polylineOptions: {
-                    strokeColor: "#337ab7", strokeWeight: 3
-                }, suppressMarkers: true
-            });
+            this.setGoogle();
         } else {
             setTimeout(() => {
-                this.bounds = new google.maps.LatLngBounds();
-                this.geocoder = new google.maps.Geocoder;
-                this.infowindow = new google.maps.InfoWindow;
-                this.directionsService = new google.maps.DirectionsService;
-                this.directionsDisplay = new google.maps.DirectionsRenderer({
-                    polylineOptions: {
-                        strokeColor: "#337ab7", strokeWeight: 3
-                    }, suppressMarkers: true
-                });
+                this.setGoogle();
             }, 100);
         }
+    }
+    private setGoogle() {
+        this.bounds = new google.maps.LatLngBounds();
+        this.geocoder = new google.maps.Geocoder;
+        this.infowindow = new google.maps.InfoWindow;
+        this.directionsService = new google.maps.DirectionsService;
+        this.directionsDisplay = new google.maps.DirectionsRenderer({
+            polylineOptions: {
+                strokeColor: "#337ab7", strokeWeight: 3
+            }, suppressMarkers: true
+        });
     }
     public getUserLocation(cb: any) {
         const self = this;
@@ -58,66 +55,44 @@ export class MapService {
 
     public initMap(mapElement: any, panoElement: any) {
         if (typeof google !== 'undefined') {
-            this.map = new google.maps.Map(mapElement, {
-                zoom: 6,
-                zoomControl: false,
-                center: new google.maps.LatLng(20.5937, 78.9629),
-                scaleControl: true,
-                scaleControlOptions: {
-                    position: google.maps.ControlPosition.BOTTOM_LEFT
-                },
-                streetViewControl: true,
-                streetViewControlOptions: {
-                    position: google.maps.ControlPosition.RIGHT_CENTER
-                },
-                mapTypeControl: false,
-                fullscreenControl: false
-            });
-            const panorama = new google.maps.StreetViewPanorama(panoElement, {
-                pov: {
-                    heading: 0, //defines the rotation angle around the camera locus in degrees relative from true north
-                    pitch: 0 // defines the angle variance "up" or "down" from the camera's initial default pitch, which is often (but not always) flat horizontal.
-                },
-                visible: false,
-                fullscreenControl: false,
-                zoomControl: false,
-                panControl: false,
-                addressControl: false
-            });
-            this.map.setStreetView(panorama);
+            this.setMap(mapElement, panoElement);
         } else {
             console.log('google undefined');
             setTimeout(() => {
-                this.map = new google.maps.Map(mapElement, {
-                    zoom: 6,
-                    zoomControl: false,
-                    center: new google.maps.LatLng(20.5937, 78.9629),
-                    scaleControl: true,
-                    scaleControlOptions: {
-                        position: google.maps.ControlPosition.BOTTOM_LEFT
-                    },
-                    streetViewControl: false,
-                    mapTypeControl: false,
-                    fullscreenControl: false
-                });
-                const panorama = new google.maps.StreetViewPanorama(panoElement, {
-                    position: new google.maps.LatLng(20.5937, 78.9629),
-                    pov: {
-                        heading: 34,
-                        pitch: 10
-                    },
-                    visible: false,
-                    fullscreenControl: false,
-                    zoomControl: false,
-                    panControl: false,
-                    addressControl: false
-                });
-                this.map.setStreetView(panorama);
+                this.setMap(mapElement, panoElement);
             }, 100);
         }
 
     }
-
+    private setMap(mapElement: any, panoElement: any) {
+        this.map = new google.maps.Map(mapElement, {
+            zoom: 6,
+            zoomControl: false,
+            center: new google.maps.LatLng(20.5937, 78.9629),
+            scaleControl: true,
+            scaleControlOptions: {
+                position: google.maps.ControlPosition.BOTTOM_LEFT
+            },
+            streetViewControl: true,
+            streetViewControlOptions: {
+                position: google.maps.ControlPosition.RIGHT_CENTER
+            },
+            mapTypeControl: false,
+            fullscreenControl: false
+        });
+        const panorama = new google.maps.StreetViewPanorama(panoElement, {
+            pov: {
+                heading: 0, //defines the rotation angle around the camera locus in degrees relative from true north
+                pitch: 0 // defines the angle variance "up" or "down" from the camera's initial default pitch, which is often (but not always) flat horizontal.
+            },
+            visible: false,
+            fullscreenControl: false,
+            zoomControl: false,
+            panControl: false,
+            addressControl: false
+        });
+        this.map.setStreetView(panorama);
+    }
     public setMarker(markers) {
         const self = this;
         for (let m of markers) {
@@ -179,50 +154,13 @@ export class MapService {
                                             <p style="margin:0; padding-top: 5px; font-size: 12px;">Address -${response.routes[0].legs[0].end_address}</p>
                                         </div>`;
         this.infowindow.setContent(contentString);
-        this.infowindow.open(this.map, marker);
+        this.infowindow.open(this.map, marker);     
         const self = this;
         this.infowindow.addListener('closeclick', () => {
             self.directionsDisplay.setMap(null);
+            //self.map.setZoom(14);
+            this.setMarker(this.userSerive.getUsers());
         })
     }
-
-    // get user address - not in use
-    // private geocodeLatLng(geocoder, map, infowindow, marker) {
-    //     const latlng = { lat: marker.user.latitude, lng: marker.user.longitude };
-    //     // const streetImage = `${environment.google_street_view}size=350x100&location=${latlng.lat},${latlng.lng}&signature=${environment.google_api_key}`;
-    //     geocoder.geocode({ 'location': latlng }, function (results, status) {
-    //         if (status === 'OK') {
-    //             if (results[0]) {
-    //                 const imageUrl = marker.user.image ? marker.user.image : marker.user.iconUrl;
-    //                 const contentString = `<div
-    //                                         class="user-map-info-window" 
-    //                                         style=" width: 300px;
-    //                                                 position:relative;
-    //                                                 min-height: 50px; 
-    //                                                 display:inline-block;
-    //                                                 overflow: hidden;">
-    //                             <div class="user-map-info-window-image" 
-    //                                 style ="width: 60px;
-    //                                         height: 60px;
-    //                                         position: absolute;" >
-    //                                 <img src=${imageUrl} class="user-img-map" width=50 height=50 style="border-radius: 5px;" >
-    //                             </div>
-    //                             <div class="user-map-info-window-address" 
-    //                                 style="padding: 0 0 0 60px;">
-    //                                <p style="margin:0;padding-bottom: 5px;"> <b>${marker.user.email}</b></p>
-    //                             <p style="margin:0;">${results[0].formatted_address}</p>
-    //                             </div>
-    //                             </div>`;
-    //                 infowindow.setContent(contentString);
-
-    //                 infowindow.open(map, marker);
-    //             } else {
-    //                 window.alert('No results found');
-    //             }
-    //         } else {
-    //             window.alert('Geocoder failed due to: ' + status);
-    //         }
-    //     });
-    // }
 
 }
