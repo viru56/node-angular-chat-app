@@ -189,9 +189,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
 
   // open chat dialog om dblClick
 
-  private initiateChatDialog(sender) {
-    this.showPanel = null;
-    this.dialogService.addDialog(ChatDialog, { sender: sender, userId: this.user._id }, { closeByClickingOutside: true });
-  }
+  // private initiateChatDialog(sender) {
+  //   console.log(sender);
+  //    this.showPanel = null;
+  //    this.dialogService.addDialog(ChatDialog, { sender: sender, userId: this.user._id }, { closeByClickingOutside: true });
+  // }
 
 }

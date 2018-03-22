@@ -21,12 +21,11 @@
       <!--<li class="nav-item ">
         <a class="nav-link" routerLink="/" routerLinkActive="active">Home</a>
       </li>-->
-      <li class="nav-item ">
+      <!-- <li class="nav-item ">
         <a class="nav-link" routerLink="/chat" routerLinkActive="active">Chat</a>
-      </li>
-      <li class="nav-item ">
-        <a class="nav-link" routerLink="/profile" routerLinkActive="active">
-
+      </li> -->
+      <li class="nav-item " (click)="openUserModal()">
+        <a class="nav-link">
           <img [src]="currentUser.image" *ngIf="currentUser.image" class="img-responsive userImg" /> 
            {{currentUser.displayName}}
         </a>

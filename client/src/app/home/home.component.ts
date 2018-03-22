@@ -12,10 +12,10 @@ import { environment } from '../../environments/environment';
 export class HomeComponent implements OnInit {
   private loginForm: FormGroup;
   private registerForm: FormGroup;
-  private demoImg: string = '/src/assets/images/demo.png';
-  private error: string = null;
-  private formError: string = null;
-  private btnTitle: string = "Sign In";
+  private demoImg = '/assets/images/demo.png';
+  private error = null;
+  private formError = null;
+  private btnTitle = 'Sign In';
   constructor(
     private router: Router,
     private route: ActivatedRoute,

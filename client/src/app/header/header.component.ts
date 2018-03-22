@@ -10,8 +10,8 @@ import { User } from '../models';
 })
 export class HeaderComponent implements OnInit {
   currentUser: User = new User();
-  private showHeader: boolean = false;
-  private logo: string = "/src/assets/images/logo.png"
+  private showHeader = false;
+  private logo = '/src/assets/images/logo.png';
   constructor(
     private userService: UserService
   ) { }
@@ -19,13 +19,15 @@ export class HeaderComponent implements OnInit {
   ngOnInit() {
     this.userService.currentUser.subscribe(user => {
       this.currentUser = user;
-      if(this.currentUser.username){
+      if (this.currentUser.username) {
         this.showHeader = true;
-      }
-      else{
+      } else {
         this.showHeader = false;
-        }
+      }
     });
+  }
+  openUserModal() {
+    // open user upadate modal
   }
 
 }

@@ -9,17 +9,17 @@ export class SocketSerivce {
     }
     // update all users to join 
     initSocket(user: User) {
-        console.log('initSocket');
         if (this.socket.json.connected) {
             this.socket.emit('join', user);
         } else {
+            console.log('initSocket');
             this.socket = io(environment.base_url);
             this.socket.emit('join', user);
         }
     }
 
     userJoinLeft() {
-        let observable = new Observable<User>(observer => {
+        const observable = new Observable<User>(observer => {
             this.socket.on('user-join-left', (user) => {
                 observer.next(user);
             });
@@ -35,7 +35,7 @@ export class SocketSerivce {
         this.socket.emit('get-writer', data);
     }
     getWriter() {
-        let observable = new Observable<string>(observer => {
+        const observable = new Observable<string>(observer => {
             this.socket.on('set-writer', (writerName) => {
                 observer.next(writerName);
             });
@@ -53,7 +53,7 @@ export class SocketSerivce {
         this.socket.emit('room-update', connetion);
     }
     getMessage() {
-        let observable = new Observable<any>(observer => {
+        const observable = new Observable<any>(observer => {
             this.socket.on('set', (data) => {
                 observer.next(data);
             });
@@ -69,7 +69,7 @@ export class SocketSerivce {
         this.socket.emit('get-chat-history', userId);
     }
     setChatHistory() {
-        let observable = new Observable<Array<Chat>>(observer => {
+        const observable = new Observable<Array<Chat>>(observer => {
             this.socket.on('set-chat-history', (data) => {
                 observer.next(data);
             });
@@ -92,7 +92,7 @@ export class SocketSerivce {
         this.socket.emit('get-users', userId);
     }
     setAllUsers() {
-        let observable = new Observable<Array<User>>(observer => {
+        const observable = new Observable<Array<User>>(observer => {
             this.socket.on('set-users', (data) => {
                 observer.next(data);
             });
