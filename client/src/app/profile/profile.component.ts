@@ -12,9 +12,9 @@ import { User } from '../models';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
-  private user: User = new User();
-  private profileForm: FormGroup;
-  private errorList: Array<string>;
+  user: User = new User();
+  profileForm: FormGroup;
+  errorList: Array<string>;
   constructor(
     private toastr: ToastsManager,
     private vRef: ViewContainerRef,
@@ -35,21 +35,21 @@ export class ProfileComponent implements OnInit {
       this.updateUser(this.userService.getCurrentUser());
     }
   }
-  private initForm() {
+  initForm() {
     this.profileForm = this.formBuilder.group({
       username: '',
       email: '',
       image: '',
       phone: '',
       password: '',
-      displayName:''
+      displayName: ''
     });
   }
-  private updateUser(values: Object) {
+  updateUser(values: Object) {
     (<any>Object).assign(this.user, values);
     this.profileForm.patchValue(this.user);
   }
-  private submitForm() {
+  submitForm() {
     this.errorList = [];
     this.updateUser(this.profileForm.value);
     for (const u in this.user) {
@@ -59,7 +59,7 @@ export class ProfileComponent implements OnInit {
     }
     this.userService.updateUser(this.user).subscribe(updatedUser => {
       this.updateUser(updatedUser);
-      this.toastr.success('Information updated!','', { showCloseButton: true});
+      this.toastr.success('Information updated!', '', { showCloseButton: true });
     }, err => {
       const errors = err.errors;
       for (const field in errors) {

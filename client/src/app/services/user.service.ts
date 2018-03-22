@@ -70,7 +70,7 @@ export class UserService {
                 return data;
             });
     }
-    createUser(user): Observable<User>{
+    createUser(user): Observable<User> {
         return this.apiService.post(`/user`, { user })
             .map(data => {
                 this.setAuth(data.user);

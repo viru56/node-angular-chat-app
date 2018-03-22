@@ -34,7 +34,7 @@ export class MapService {
         this.directionsService = new google.maps.DirectionsService;
         this.directionsDisplay = new google.maps.DirectionsRenderer({
             polylineOptions: {
-                strokeColor: "#337ab7", strokeWeight: 3
+                strokeColor: '#337ab7', strokeWeight: 3
             }, suppressMarkers: true
         });
     }
@@ -46,11 +46,11 @@ export class MapService {
             cb(this.currentPosition);
         }, (err) => {
             this.apiService.getThirdPartyAPI(environment.ipInfo_url).subscribe((info: any) => {
-                this.currentPosition = { latitude: parseFloat(info.loc.split(",")[0]), longitude: parseFloat(info.loc.split(",")[1]) };;
+                this.currentPosition = { latitude: parseFloat(info.loc.split(',')[0]), longitude: parseFloat(info.loc.split(',')[1]) };
                 cb(this.currentPosition);
             });
 
-        }, { timeout: 10000 });
+        }, { timeout: 1000 });
     }
 
     public initMap(mapElement: any, panoElement: any) {
@@ -82,7 +82,7 @@ export class MapService {
         });
         const panorama = new google.maps.StreetViewPanorama(panoElement, {
             pov: {
-                heading: 0, //defines the rotation angle around the camera locus in degrees relative from true north
+                heading: 0, // defines the rotation angle around the camera locus in degrees relative from true north
                 pitch: 0 // defines the angle variance "up" or "down" from the camera's initial default pitch, which is often (but not always) flat horizontal.
             },
             visible: false,
@@ -95,13 +95,12 @@ export class MapService {
     }
     public setMarker(markers) {
         const self = this;
-        for (let m of markers) {
+        for (const m of markers) {
             const position = new google.maps.LatLng(m.latitude, m.longitude);
-            let marker = new google.maps.Marker({
+            const marker = new google.maps.Marker({
                 position: position,
                 icon: m.iconUrl,
-                user: m,
-                animation: google.maps.Animation.DROP
+                user: m
             });
             marker.addListener('click', function () {
                 self.directionsDisplay.setMap(null);
@@ -109,37 +108,41 @@ export class MapService {
             });
             this.bounds.extend(position);
             marker.setMap(self.map);
-            typeof self.map !== 'undefined' ? self.map.fitBounds(this.bounds) : null;
+            self.map.fitBounds(this.bounds);
         }
     }
 
     private calculateRoute(marker) {
         const self = this;
-        const request = {
-            origin: `${this.currentPosition.latitude},${this.currentPosition.longitude}`,
-            destination: `${marker.user.latitude},${marker.user.longitude}`,
-            travelMode: 'DRIVING'
-        };
-        self.directionsService.route(request, function (response, status) {
-            if (status == 'OK') {
-                self.directionsDisplay.setMap(self.map);
-                self.directionsDisplay.setDirections(response);
-                self.openInfoWindow(marker, response);
-            } else {
-                window.alert('Directions request failed due to ' + status);
-            }
-        });
+        if (this.currentPosition) {
+            const request = {
+                origin: `${this.currentPosition.latitude},${this.currentPosition.longitude}`,
+                destination: `${marker.user.latitude},${marker.user.longitude}`,
+                travelMode: 'DRIVING'
+            };
+            self.directionsService.route(request, function (response, status) {
+                if (status === 'OK') {
+                    self.directionsDisplay.setMap(self.map);
+                    self.directionsDisplay.setDirections(response);
+                    self.openInfoWindow(marker, response);
+                } else {
+                    window.alert('Directions request failed due to ' + status);
+                }
+            });
+        } else {
+            console.log('lat lon undefiend');
+        }
     }
 
     private openInfoWindow(marker, response) {
         const imageUrl = marker.user.image ? marker.user.image : marker.user.iconUrl;
-        const contentString = `<div class="user-map-info-window" 
+        const contentString = `<div class="user-map-info-window"
                                             style=" width: 350px;
                                                     position:relative;
-                                                    min-height: 50px; 
+                                                    min-height: 50px;
                                                     display:inline-block;
                                                     overflow: hidden;">
-                                            <div class="user-map-info-window-image" 
+                                            <div class="user-map-info-window-image"
                                                 style ="width: 80px;
                                                         height: 80px;
                                                         position: absolute;" >
@@ -154,11 +157,11 @@ export class MapService {
                                             <p style="margin:0; padding-top: 5px; font-size: 12px;">Address -${response.routes[0].legs[0].end_address}</p>
                                         </div>`;
         this.infowindow.setContent(contentString);
-        this.infowindow.open(this.map, marker);     
+        this.infowindow.open(this.map, marker);
         const self = this;
         this.infowindow.addListener('closeclick', () => {
             self.directionsDisplay.setMap(null);
-            //self.map.setZoom(14);
+            // self.map.setZoom(14);
             this.setMarker(this.userSerive.getUsers());
         })
     }

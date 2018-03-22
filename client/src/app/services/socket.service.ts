@@ -7,7 +7,7 @@ export class SocketSerivce {
     constructor() {
         this.socket = io(environment.base_url);
     }
-    // update all users to join 
+    // update all users to join
     initSocket(user: User) {
         if (this.socket.json.connected) {
             this.socket.emit('join', user);

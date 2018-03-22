@@ -18,7 +18,11 @@ var ChatSchema = new mongoose.Schema({
     content: {
         type: String,
         required: [true, "can't be blank"]
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
     }
-}, { timestamps: true, versionKey: false });
+}, { timestamps: false, versionKey: false });
 
 mongoose.model('Chat', ChatSchema);

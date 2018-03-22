@@ -10,12 +10,12 @@ import { environment } from '../../environments/environment';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  private loginForm: FormGroup;
-  private registerForm: FormGroup;
-  private demoImg = '/assets/images/demo.png';
-  private error = null;
-  private formError = null;
-  private btnTitle = 'Sign In';
+  loginForm: FormGroup;
+  registerForm: FormGroup;
+  demoImg = '/assets/images/demo.png';
+  error = null;
+  formError = null;
+  btnTitle = 'Sign In';
   constructor(
     private router: Router,
     private route: ActivatedRoute,
@@ -39,13 +39,13 @@ export class HomeComponent implements OnInit {
       this.userService.socialCalllback(`${callbackUrl}/${window.location.search}`);
     }
   }
-  private initLoginForm() {
+  initLoginForm() {
     this.loginForm = this.formBuilder.group({
       'email': ['', Validators.required],
       'password': ['', Validators.required]
     });
   }
-  private initRegisterForm() {
+  initRegisterForm() {
     const EMAILRegx = /^[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,3}$/;
     const OnlyNumberRegx = /^[0-9]{10}$/;
     const OnlyAlphaNumericRegx = /^[^-\s][\w\s]{2,100}$/;
@@ -58,15 +58,15 @@ export class HomeComponent implements OnInit {
       'password': [null, Validators.compose([Validators.required, Validators.minLength(4), Validators.maxLength(16)])]
     });
   }
-  private login() {
+  login() {
     this.error = null;
     const user = this.loginForm.value;
-    if (user.email.trim() === "") {
-      this.error = "email or username can't be blank";
+    if (user.email.trim() === '') {
+      this.error = `email or username can't be blank`;
       return;
     }
-    if (user.password.trim() === "") {
-      this.error = "password can't be blank";
+    if (user.password.trim() === '') {
+      this.error = `password can't be blank`;
       return;
     }
     this.userService.login(user)
@@ -75,12 +75,12 @@ export class HomeComponent implements OnInit {
         this.router.navigateByUrl('/chat');
       }, err => {
         console.log(err);
-        this.btnTitle === "Sign In" ? this.error = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}` :
+        this.btnTitle === 'Sign In' ? this.error = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}` :
           this.formError = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}`
       });
 
   }
-  private createNewUser() {
+  createNewUser() {
     this.formError = null;
     this.userService.createUser(this.registerForm.value).subscribe(data => {
       console.log(data);
@@ -90,15 +90,15 @@ export class HomeComponent implements OnInit {
       this.formError = `${Object.keys(err.errors)[0]} ${err.errors[Object.keys(err.errors)[0]]}`;
     })
   }
-  private loginWithGoogle() {
+  loginWithGoogle() {
     this.userService.googleLogin();
   }
-  private loginWithFacebook() {
+  loginWithFacebook() {
     this.userService.facebookLogin();
   }
-  private toggleLogin() {
+  toggleLogin() {
     this.formError = null;
     this.error = null;
-    this.btnTitle === "Sign In" ? this.btnTitle = "Sign Up" : this.btnTitle = "Sign In";
+    this.btnTitle === 'Sign In' ? this.btnTitle = 'Sign Up' : this.btnTitle = 'Sign In';
   }
 }

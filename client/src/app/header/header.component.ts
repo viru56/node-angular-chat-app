@@ -10,8 +10,8 @@ import { User } from '../models';
 })
 export class HeaderComponent implements OnInit {
   currentUser: User = new User();
-  private showHeader = false;
-  private logo = '/src/assets/images/logo.png';
+  showHeader = false;
+  logo = '/src/assets/images/logo.png';
   constructor(
     private userService: UserService
   ) { }

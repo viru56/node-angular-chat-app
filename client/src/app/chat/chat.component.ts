@@ -1,4 +1,4 @@
-import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit, AfterViewChecked, ElementRef, ViewChild, OnDestroy } from '@angular/core';
 import { DialogService } from 'ng2-bootstrap-modal';
 import { User, Chat, Room } from '../models';
 import { UserService, ApiService, ChatService, SocketSerivce, MapService } from '../services';
@@ -10,27 +10,27 @@ import { ChatDialog } from './chat-dialog/chat-dialog.component';
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.scss']
 })
-export class ChatComponent implements OnInit, AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked, OnDestroy {
   @ViewChild('scroll') private chatDiv: ElementRef;
   @ViewChild('map') private mapElement: ElementRef;
   @ViewChild('pano') private panoElement: ElementRef;
-  
-  private showPanel: string = null;
-  private content: string = "";
-  private showList: boolean = true;
-  private panelHeading: string = "Friends";
-  private messages: Array<Chat> = [];
-  private user: User = new User();
-  private room: Room = new Room();
-  private markers: Array<User> = [];
-  private friends: Array<User> = [];
-  // private iconUrl: string;
-  private writerName: string;
-  private getMessageSubscribe: any;
-  private writerSubscribe: any;
-  private findAllUsersSubscribe: any;
-  private userJoinLeftSubscribe: any;
-  private setChatHistorySubscribe: any;
+
+  showPanel: string = null;
+  content = '';
+  showList = true;
+  panelHeading = 'Friends';
+  messages: Array<Chat> = [];
+  user: User = new User();
+  room: Room = new Room();
+  markers: Array<User> = [];
+  friends: Array<User> = [];
+  //  iconUrl: string;
+  writerName: string;
+  getMessageSubscribe: any;
+  writerSubscribe: any;
+  findAllUsersSubscribe: any;
+  userJoinLeftSubscribe: any;
+  setChatHistorySubscribe: any;
   constructor(
     private userService: UserService,
     private apiService: ApiService,
@@ -46,7 +46,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.socketSerivce.initSocket(this.user);
     this.socketSerivce.getAllUsers(this.user._id);
     // initilize map
-    this.mapService.initMap(this.mapElement.nativeElement,this.panoElement.nativeElement);
+    this.mapService.initMap(this.mapElement.nativeElement, this.panoElement.nativeElement);
 
     // get Lat and long of user and update his/her location
     this.mapService.getUserLocation((latlng) => {
@@ -82,9 +82,9 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     });
     this.userJoinLeftSubscribe = this.socketSerivce.userJoinLeft().subscribe((user) => {
       const length = this.friends.length;
-      if (user._id != this.user._id) {
+      if (user._id !== this.user._id) {
         for (let i = 0; i < length; i++) {
-          if (this.friends[i]._id == user._id) {
+          if (this.friends[i]._id === user._id) {
             user['iconUrl'] = user.image ? `${environment.google_image_path}${user.username}.jpg` : `${environment.google_image_path}default.jpg`;
             user.unreadMessage = this.friends[i].unreadMessage;
             this.friends[i] = user;
@@ -108,17 +108,17 @@ export class ChatComponent implements OnInit, AfterViewChecked {
     this.setChatHistorySubscribe.unsubscribe();
   }
 
-  private updateUserLocation() {
+  updateUserLocation() {
     this.socketSerivce.initSocket(this.user);
     this.socketSerivce.getAllUsers(this.user._id);
   }
 
-  //show hide panel
-  private mainLiClick(receiver) {
+  // show hide panel
+  mainLiClick(receiver) {
     if (this.showPanel === receiver._id) {
       this.showPanel = null
     } else {
-      if (receiver._id != this.user._id) {
+      if (receiver._id !== this.user._id) {
         this.socketSerivce.getChatHistory(this.user._id);
         this.showPanel = receiver._id;
         if (receiver.unreadMessage !== 0) {
@@ -129,7 +129,7 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.showPanel = receiver._id;
     }
   }
-  private onKeyUp(ev, frnd) {
+  onKeyUp(ev, frnd) {
     const keyCode = ev.which || ev.keyCode;
     if (keyCode !== 13 && this.content.trim().length > 0) {
       const writer = {
@@ -152,23 +152,23 @@ export class ChatComponent implements OnInit, AfterViewChecked {
   }
 
   // deep clone of an array
-  private cloneArray(source) {
-    let target = [];
-    for (let obj of source) {
+  cloneArray(source) {
+    const target = [];
+    for (const obj of source) {
       obj['iconUrl'] = obj.image ? `${environment.google_image_path}${obj.username}.jpg` : `${environment.google_image_path}default.jpg`;
       target.push((<any>Object).assign({}, obj));
     }
     return target;
   }
-  private scrollChatDiv(): void {
+  scrollChatDiv(): void {
     try {
       this.chatDiv.nativeElement.scrollTop = this.chatDiv.nativeElement.scrollHeight;
     } catch (err) { }
   }
-  private updateNotification() {
+  updateNotification() {
     if (this.showPanel !== this.room.sender) {
-      for (let fr of this.friends) {
-        if (this.room.sender == fr._id) {
+      for (const fr of this.friends) {
+        if (this.room.sender === fr._id) {
           fr.unreadMessage = this.room.unreadMessage;
           fr.connection = this.room.connection;
           break;
@@ -179,10 +179,10 @@ export class ChatComponent implements OnInit, AfterViewChecked {
       this.socketSerivce.updateUnreadMessageToZero(this.room.connection);
     }
   }
-  private showUserList() {
+  showUserList() {
     this.showList = !this.showList;
   }
-  private showChatPanel(panel){
+  showChatPanel(panel) {
     this.showList = true;
     this.panelHeading = panel;
   }
